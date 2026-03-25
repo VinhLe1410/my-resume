@@ -1,0 +1,12 @@
+{
+  "name": "my-resume",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter front-end dev & pnpm --filter back-end dev",
+    "dev:frontend": "pnpm --filter front-end dev",
+    "dev:backend": "pnpm --filter back-end dev",
+    "build": "pnpm --filter front-end build",
+    "build:backend": "pnpm --filter back-end build",
+    "check": "pnpm --filter front-end check"
+  }
+}
