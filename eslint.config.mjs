@@ -4,7 +4,7 @@ import svelte from "eslint-plugin-svelte";
 import ts from "typescript-eslint";
 import sanity from "@sanity/eslint-config-studio";
 
-export default ts.config(
+export default [
 	// Global ignores
 	{
 		ignores: [
@@ -44,4 +44,4 @@ export default ts.config(
 
 	// Prettier must be last
 	prettier,
-);
+];
