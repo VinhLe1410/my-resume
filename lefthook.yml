@@ -1,6 +1,14 @@
 pre-commit:
+  parallel: true
   commands:
-    check:
+    format:
       glob: "*.{js,ts,cjs,mjs,jsx,tsx,json,jsonc,css,svelte}"
-      run: pnpm exec biome check --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files}
+      run: pnpm exec biome format --no-errors-on-unmatched --files-ignore-unknown=true --colors=off --write {staged_files}
       stage_fixed: true
+    lint:
+      glob: "*.{js,ts,cjs,mjs,jsx,tsx,json,jsonc,css,svelte}"
+      run: pnpm exec biome lint --no-errors-on-unmatched --files-ignore-unknown=true --colors=off --write {staged_files}
+      stage_fixed: true
+    typecheck:
+      glob: "*.{ts,tsx,svelte}"
+      run: pnpm --filter front-end check

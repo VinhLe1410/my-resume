@@ -1,53 +1,13 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.4.9/schema.json",
-
 	"files": {
-		"includes": ["**", "!front-end/.svelte-kit", "!back-end/.sanity", "!back-end/dist"]
+		"includes": [
+			"**",
+			"!front-end/.svelte-kit",
+			"!back-end/.sanity",
+			"!back-end/dist"
+		]
 	},
-
-	"formatter": {
-		"lineWidth": 100
-	},
-
-	"javascript": {
-		"formatter": {
-			"quoteStyle": "single",
-			"semicolons": "asNeeded",
-			"bracketSpacing": false
-		}
-	},
-
-	"linter": {
-		"rules": {
-			"recommended": true
-		}
-	},
-
-	"css": {
-		"parser": {
-			"tailwindDirectives": true
-		}
-	},
-
 	"html": {
 		"experimentalFullSupportEnabled": true
-	},
-
-	"overrides": [
-		{
-			"includes": ["front-end/**/*.svelte"],
-			"linter": {
-				"rules": {
-					"correctness": {
-						"noUnusedVariables": "off",
-						"noUnusedImports": "off"
-					},
-					"style": {
-						"useConst": "off",
-						"useImportType": "off"
-					}
-				}
-			}
-		}
-	]
+	}
 }
