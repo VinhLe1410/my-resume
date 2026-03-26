@@ -2,9 +2,9 @@
 	"name": "my-resume",
 	"private": true,
 	"scripts": {
-		"dev": "pnpm --filter front-end dev & pnpm --filter back-end dev",
 		"dev:frontend": "pnpm --filter front-end dev",
 		"dev:backend": "pnpm --filter back-end dev",
+		"dev": "concurrently -n front,back -c blue,magenta 'pnpm dev:frontend' 'pnpm dev:backend'",
 		"build": "pnpm --filter front-end build",
 		"build:backend": "pnpm --filter back-end build",
 		"typecheck": "pnpm --filter front-end check",
@@ -26,5 +26,8 @@
 		"prettier-plugin-svelte": "^3.5.1",
 		"prettier-plugin-tailwindcss": "^0.7.2",
 		"typescript-eslint": "^8.57.2"
+	},
+	"dependencies": {
+		"concurrently": "^9.2.1"
 	}
 }
