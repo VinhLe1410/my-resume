@@ -2,12 +2,12 @@ pre-commit:
   parallel: true
   commands:
     format:
-      glob: "*.{js,ts,cjs,mjs,jsx,tsx,json,jsonc,css,svelte}"
-      run: pnpm exec biome format --no-errors-on-unmatched --files-ignore-unknown=true --colors=off --write {staged_files}
+      glob: "*.{js,ts,cjs,mjs,jsx,tsx,json,css,svelte,html}"
+      run: pnpm exec prettier --write --ignore-unknown {staged_files}
       stage_fixed: true
     lint:
-      glob: "*.{js,ts,cjs,mjs,jsx,tsx,json,jsonc,css,svelte}"
-      run: pnpm exec biome lint --no-errors-on-unmatched --files-ignore-unknown=true --colors=off --write {staged_files}
+      glob: "*.{js,ts,cjs,mjs,jsx,tsx,svelte}"
+      run: pnpm exec eslint --fix --no-warn-ignored {staged_files}
       stage_fixed: true
     typecheck:
       glob: "*.{ts,tsx,svelte}"

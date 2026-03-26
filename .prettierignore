@@ -1,0 +1,6 @@
+front-end/.svelte-kit
+front-end/build
+back-end/.sanity
+back-end/dist
+.claude
+pnpm-lock.yaml

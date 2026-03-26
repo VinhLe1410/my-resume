@@ -8,13 +8,23 @@
 		"build": "pnpm --filter front-end build",
 		"build:backend": "pnpm --filter back-end build",
 		"typecheck": "pnpm --filter front-end check",
-		"lint": "biome lint .",
-		"format": "biome format --write .",
-		"check": "biome check --write .",
-		"check:ci": "biome ci ."
+		"lint": "eslint .",
+		"lint:fix": "eslint --fix .",
+		"format": "prettier --write .",
+		"format:check": "prettier --check .",
+		"check": "prettier --write . && eslint --fix .",
+		"check:ci": "prettier --check . && eslint ."
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.4.9",
-		"lefthook": "^2.1.4"
+		"@eslint/js": "^9.39.4",
+		"@sanity/eslint-config-studio": "^6.0.0",
+		"eslint": "^9.39.4",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-svelte": "^3.16.0",
+		"lefthook": "^2.1.4",
+		"prettier": "^3.8.1",
+		"prettier-plugin-svelte": "^3.5.1",
+		"prettier-plugin-tailwindcss": "^0.7.2",
+		"typescript-eslint": "^8.57.2"
 	}
 }
