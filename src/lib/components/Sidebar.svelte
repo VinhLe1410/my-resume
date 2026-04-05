@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { SlideConfig } from "$lib/slides";
+  import { resume } from "$lib/data/resume";
 
   let {
     slides,
@@ -27,7 +28,7 @@
       <h1
         class="text-xl font-bold tracking-tighter text-primary font-headline uppercase leading-none"
       >
-        Phuc Vinh Le
+        {resume.about.name}
       </h1>
       <span class="text-[10px] text-ghost mt-2 block tracking-widest">
         RESUME // 04042026
@@ -46,6 +47,7 @@
         {#each slides as slide}
           <li>
             <button
+              aria-current={slide.id === currentSlide ? 'page' : undefined}
               class="text-xs tracking-[0.15em] transition-colors duration-150 w-full flex items-center justify-center
                 {slide.id === currentSlide
                   ? 'text-primary font-bold'

@@ -4,6 +4,7 @@
 	import Sidebar from "$lib/components/Sidebar.svelte";
 	import SlideContainer from "$lib/components/SlideContainer.svelte";
 	import { slides } from "$lib/slides";
+	import { activeSlide } from "$lib/active-slide.svelte";
 
 	function getInitialSlide(): string {
 		if (browser) {
@@ -46,6 +47,10 @@
 			}
 		}
 	}
+
+	$effect(() => {
+		activeSlide.id = currentSlide;
+	});
 
 	onMount(() => {
 		ready = true;

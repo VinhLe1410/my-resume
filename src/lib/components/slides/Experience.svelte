@@ -2,6 +2,7 @@
   import { slide } from "svelte/transition";
   import SlideLayout from "../SlideLayout.svelte";
   import type { ExperienceEntry } from "$lib/data/resume";
+  import { activeSlide } from "$lib/active-slide.svelte";
 
   let { data }: { data: ExperienceEntry[] } = $props();
 
@@ -25,6 +26,8 @@
   }
 
   function handleKeydown(e: KeyboardEvent) {
+    if (activeSlide.id !== "experience") return;
+
     // Ignore if user is typing in an input/textarea
     const tag = (e.target as HTMLElement)?.tagName;
     if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
@@ -52,6 +55,7 @@
       <button
         class="flex items-center gap-3 cursor-pointer group mb-10"
         onclick={toggleAll}
+        aria-expanded={allExpanded}
       >
         <kbd
           class="text-[10px] text-muted border border-outline px-1.5 py-0.5 font-mono tracking-wider"
@@ -74,6 +78,7 @@
             <button
               class="w-full text-left cursor-pointer"
               onclick={() => toggle(i)}
+              aria-expanded={expanded.has(i)}
             >
               <div class="flex items-baseline mb-1 gap-3">
                 <kbd

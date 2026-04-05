@@ -38,19 +38,11 @@ export interface Education {
   achievements: string[];
 }
 
-export interface Project {
-  name: string;
-  period: string;
-  tech: string[];
-  link?: string;
-}
-
 export interface Resume {
   about: About;
   experience: ExperienceEntry[];
   skills: SkillCategory[];
   education: Education;
-  projects: Project[];
 }
 
 // ── Data ───────────────────────────────────────────────
@@ -216,34 +208,4 @@ export const resume: Resume = {
       "Distinction in Computing Technology Inquiry Project",
     ],
   },
-
-  projects: [
-    {
-      name: "EdBright's Learning Portal",
-      period: "Aug 2025 — Present",
-      tech: [
-        "Next.js",
-        "Strapi",
-        "PostgreSQL",
-        "React Query",
-        "Tailwind CSS",
-        "Turborepo",
-        "SQLite",
-      ],
-    },
-    {
-      name: "ProofVault.Tech",
-      period: "Feb 2025 — Dec 2025",
-      tech: [
-        "Next.js",
-        "Expo",
-        "Turborepo",
-        "Tailwind CSS",
-        "Prisma",
-        "Docker",
-        "MinIO S3",
-      ],
-      link: "https://www.swinburne.edu.au/events/2025/11/capstone-project-expo-2025/#computer",
-    },
-  ],
 };
