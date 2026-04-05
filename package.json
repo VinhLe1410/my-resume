@@ -1,33 +1,27 @@
 {
-	"name": "my-resume",
-	"private": true,
-	"scripts": {
-		"dev:frontend": "pnpm --filter front-end dev",
-		"dev:backend": "pnpm --filter back-end dev",
-		"dev": "concurrently -n front,back -c blue,magenta 'pnpm dev:frontend' 'pnpm dev:backend'",
-		"build": "pnpm --filter front-end build",
-		"build:backend": "pnpm --filter back-end build",
-		"typecheck": "pnpm --filter front-end check",
-		"lint": "eslint .",
-		"lint:fix": "eslint --fix .",
-		"format": "prettier --write .",
-		"format:check": "prettier --check .",
-		"check": "prettier --write . && eslint --fix .",
-		"check:ci": "prettier --check . && eslint ."
-	},
-	"devDependencies": {
-		"@eslint/js": "^9.39.4",
-		"@sanity/eslint-config-studio": "^6.0.0",
-		"eslint": "^9.39.4",
-		"eslint-config-prettier": "^10.1.8",
-		"eslint-plugin-svelte": "^3.16.0",
-		"lefthook": "^2.1.4",
-		"prettier": "^3.8.1",
-		"prettier-plugin-svelte": "^3.5.1",
-		"prettier-plugin-tailwindcss": "^0.7.2",
-		"typescript-eslint": "^8.57.2"
-	},
-	"dependencies": {
-		"concurrently": "^9.2.1"
-	}
+  "name": "front-end",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "prepare": "svelte-kit sync || echo ''",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-auto": "^7.0.0",
+    "@sveltejs/kit": "^2.50.2",
+    "@sveltejs/vite-plugin-svelte": "^6.2.4",
+    "@tailwindcss/forms": "^0.5.11",
+    "@tailwindcss/typography": "^0.5.19",
+    "@tailwindcss/vite": "^4.1.18",
+    "svelte": "^5.54.0",
+    "svelte-check": "^4.4.2",
+    "tailwindcss": "^4.1.18",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
+  }
 }
