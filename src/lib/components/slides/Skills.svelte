@@ -16,13 +16,13 @@
 
       <!-- Category grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-x-16 gap-y-12">
-        {#each data as category}
+        {#each data as category (category.label)}
           <div>
             <h4 class="text-xs text-muted tracking-[0.15em] uppercase mb-5">
               {category.label}
             </h4>
             <div class="flex flex-wrap gap-2.5">
-              {#each category.items as item}
+              {#each category.items as item (item.name)}
                 {#if item.pinned}
                   <span class="text-sm text-primary border border-primary/60 px-2.5 py-1">
                     {item.name}

@@ -39,7 +39,7 @@
             <a
               href={data.github}
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener noreferrer external"
               class="text-primary text-sm hover:underline"
             >
               {data.github.replace('https://', '')}

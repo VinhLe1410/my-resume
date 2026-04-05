@@ -30,7 +30,7 @@
       <div>
         <h4 class="text-xs text-muted tracking-[0.15em] uppercase mb-5">Notable Grades</h4>
         <ul class="space-y-3 border-l border-outline-subtle/30 pl-6">
-          {#each data.achievements as achievement}
+          {#each data.achievements as achievement, i (i)}
             <li class="flex gap-3 text-sm text-secondary/80 leading-relaxed">
               <span class="text-ghost shrink-0">_</span>
               <span>{achievement}</span>

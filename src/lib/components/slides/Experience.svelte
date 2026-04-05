@@ -1,28 +1,25 @@
 <script lang="ts">
   import { slide } from 'svelte/transition';
+  import { SvelteSet } from 'svelte/reactivity';
   import SlideLayout from '../SlideLayout.svelte';
   import type { ExperienceEntry } from '$lib/data/resume';
   import { activeSlide } from '$lib/active-slide.svelte';
 
   let { data }: { data: ExperienceEntry[] } = $props();
 
-  let expanded = $state<Set<number>>(new Set());
+  const expanded = new SvelteSet<number>();
 
   const allExpanded = $derived(expanded.size === data.length);
 
   function toggle(index: number) {
-    const next = new Set(expanded);
-    if (next.has(index)) next.delete(index);
-    else next.add(index);
-    expanded = next;
+    if (expanded.has(index)) expanded.delete(index);
+    else expanded.add(index);
   }
 
   function toggleAll() {
-    if (allExpanded) {
-      expanded = new Set();
-    } else {
-      expanded = new Set(data.map((_, i) => i));
-    }
+    const wasAllExpanded = allExpanded;
+    expanded.clear();
+    if (!wasAllExpanded) data.forEach((_, i) => expanded.add(i));
   }
 
   function handleKeydown(e: KeyboardEvent) {
@@ -65,7 +62,7 @@
 
       <!-- Grid on large screens, stack on small -->
       <div class="grid grid-cols-1 2xl:grid-cols-2 gap-12 2xl:gap-16 items-start">
-        {#each data as entry, i}
+        {#each data as entry, i (entry.company)}
           <div class="group">
             <!-- Header — always visible, clickable -->
             <button class="w-full text-left cursor-pointer" onclick={() => toggle(i)} aria-expanded={expanded.has(i)}>
@@ -101,7 +98,7 @@
             <!-- Expandable bullet list -->
             {#if expanded.has(i)}
               <ul class="mt-6 space-y-3 border-l border-outline-subtle/30 pl-6" transition:slide={{ duration: 200 }}>
-                {#each entry.bullets as bullet}
+                {#each entry.bullets as bullet, j (j)}
                   <li class="flex gap-3 text-sm text-secondary/80 leading-relaxed">
                     <span class="text-ghost shrink-0">_</span>
                     <span>{bullet}</span>

@@ -38,7 +38,7 @@
       ></div>
 
       <ul class="flex flex-col" style="gap: {ITEM_GAP}px;">
-        {#each slides as slide}
+        {#each slides as slide (slide.id)}
           <li>
             <button
               aria-current={slide.id === currentSlide ? 'page' : undefined}
