@@ -3,7 +3,7 @@ import { resume } from "./data/resume";
 import About from "./components/slides/About.svelte";
 import Experience from "./components/slides/Experience.svelte";
 import Skills from "./components/slides/Skills.svelte";
-import SlidePlaceholder from "./components/SlidePlaceholder.svelte";
+import Education from "./components/slides/Education.svelte";
 
 export interface SlideConfig {
   id: string;
@@ -34,13 +34,7 @@ export const slides: SlideConfig[] = [
   {
     id: "education",
     label: "EDUCATION",
-    component: SlidePlaceholder,
-    props: { title: "EDUCATION" },
-  },
-  {
-    id: "contact",
-    label: "CONTACT",
-    component: SlidePlaceholder,
-    props: { title: "CONTACT" },
+    component: Education,
+    props: { data: resume.education },
   },
 ];
