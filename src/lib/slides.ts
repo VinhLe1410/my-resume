@@ -1,4 +1,7 @@
 import type { Component } from "svelte";
+import { resume } from "./data/resume";
+import About from "./components/slides/About.svelte";
+import Experience from "./components/slides/Experience.svelte";
 import SlidePlaceholder from "./components/SlidePlaceholder.svelte";
 
 export interface SlideConfig {
@@ -12,14 +15,14 @@ export const slides: SlideConfig[] = [
   {
     id: "about",
     label: "ABOUT",
-    component: SlidePlaceholder,
-    props: { title: "ABOUT" },
+    component: About,
+    props: { data: resume.about },
   },
   {
     id: "experience",
     label: "EXPERIENCE",
-    component: SlidePlaceholder,
-    props: { title: "EXPERIENCE" },
+    component: Experience,
+    props: { data: resume.experience },
   },
   {
     id: "skills",

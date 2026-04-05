@@ -1,0 +1,223 @@
+// ── Types ──────────────────────────────────────────────
+
+export interface About {
+  name: string;
+  tagline: string;
+  summary: string;
+  location: string;
+  github: string;
+  email: string;
+  phone: string;
+}
+
+export interface ExperienceEntry {
+  role: string;
+  company: string;
+  location: string;
+  period: string;
+  summary: string;
+  bullets: string[];
+}
+
+export interface SkillCategory {
+  label: string;
+  items: string[];
+}
+
+export interface Education {
+  institution: string;
+  degree: string;
+  period: string;
+  mode: string;
+  description: string;
+  achievements: string[];
+}
+
+export interface Project {
+  name: string;
+  period: string;
+  tech: string[];
+  link?: string;
+}
+
+export interface Resume {
+  about: About;
+  experience: ExperienceEntry[];
+  skills: SkillCategory[];
+  education: Education;
+  projects: Project[];
+}
+
+// ── Data ───────────────────────────────────────────────
+
+export const resume: Resume = {
+  about: {
+    name: "Vinh Le",
+    tagline: "Full Stack Developer",
+    summary:
+      "Computer Science graduate with a background in Data Science and hands-on experience in full-stack software development and cloud-based systems. Experienced in building and deploying web applications, automation workflows, and AWS infrastructure using modern frameworks and CI/CD practices. Strong interest in developing scalable, user-focused solutions.",
+    location: "VIC, Australia",
+    github: "https://github.com/VinhLe1410",
+    email: "lpvinh2k4@gmail.com",
+    phone: "+61 433 443 221",
+  },
+
+  experience: [
+    {
+      role: "Junior Full Stack Developer",
+      company: "Evolit Pty Ltd",
+      location: "Onsite - Remote",
+      period: "Feb 2025 — Present",
+      summary:
+        "Client-facing full-stack role building production systems across Chrome extensions, internal web apps, and AWS cloud infrastructure.",
+      bullets: [
+        "Work in a client-facing role, translating business requirements and feature requests into technical solutions and demos.",
+        "Conduct project walkthroughs and shoulder-tap demos for stakeholders to validate features and gather feedback.",
+        "Develop and maintain multiple production projects, including Chrome extensions, internal back-office web applications, and automation tools.",
+        "Built scheduled and event-driven AWS Lambda functions for document syncing, API data extraction, and file processing workflows.",
+        "Design and deploy cloud infrastructure using AWS CDK (TypeScript), provisioning CloudFormation stacks.",
+        "Implement cloud services including AWS Amplify, Lambda, S3, DynamoDB, Cognito, Route 53, API Gateway, and Secrets Manager for secure, scalable applications.",
+        "Set up and maintain CI/CD pipelines with GitHub Actions, automating deployments across development, staging, and production environments, using Nx monorepos to manage and share code across multiple applications and services.",
+        "Use Jira to track work (epics, spikes, and tickets), communicate progress, and collaborate effectively with the team.",
+      ],
+    },
+    {
+      role: "Tech Lead / Full Stack Developer",
+      company: "Learning Portal for EdBright Tutoring",
+      location: "Remote",
+      period: "Aug 2025 — Feb 2026",
+      summary:
+        "Led architecture and full-stack development for a multi-role educational web application.",
+      bullets: [
+        "Tech Lead & primary Full-Stack Developer for a multi-role educational web application.",
+        "Designed and enforced front-end and back-end architecture, including folder structure, data flow, and API integration.",
+        "Led major codebase refactors, adopting React Query for server-state management to improve performance, caching, and maintainability.",
+        "Built responsive and accessible UIs using Tailwind CSS and shadcn/ui, focusing on child-friendly, interactive user experiences.",
+        "Translated business and educational requirements into database schema design and back-end logic.",
+        "Used AI-assisted tooling during refactors to plan, validate, and implement changes while preserving existing functionality and code standards.",
+        "Supporting deployment and post-release technical issues, assisting stakeholders with configuration and troubleshooting.",
+      ],
+    },
+  ],
+
+  skills: [
+    {
+      label: "AWS Services",
+      items: [
+        "Lambda",
+        "Route 53",
+        "CloudFormation",
+        "AWS Amplify",
+        "EC2",
+        "DynamoDB",
+        "Cognito",
+        "Secrets Manager",
+        "CloudWatch",
+        "SQS",
+        "SNS",
+        "API Gateway",
+        "S3",
+      ],
+    },
+    {
+      label: "Web Frameworks & Runtimes",
+      items: [
+        "Next.js",
+        "React",
+        "Vue.js",
+        "SvelteKit",
+        "Expo",
+        "tRPC",
+        "Tailwind CSS",
+        "shadcn/ui",
+        "React Query",
+        "Turborepo",
+        "Nx Monorepo",
+        "Node.js",
+        "Bun",
+      ],
+    },
+    {
+      label: "Tools",
+      items: ["Figma", "Postman", "Docker", "OrbStack", "Draw.io"],
+    },
+    {
+      label: "Languages",
+      items: [
+        "JavaScript",
+        "TypeScript",
+        "C++",
+        "Ruby",
+        "SQL",
+        "HTML",
+        "PHP",
+        "CSS",
+        "Svelte",
+      ],
+    },
+    {
+      label: "Databases",
+      items: ["MySQL", "PostgreSQL", "SQLite", "NoSQL"],
+    },
+    {
+      label: "Project Management",
+      items: ["Jira", "GitHub Issues", "GitHub Projects"],
+    },
+    {
+      label: "CI/CD",
+      items: ["GitHub Actions", "GitHub", "GitLab"],
+    },
+    {
+      label: "IDEs",
+      items: ["VS Code", "Cursor", "Zed", "NeoVim"],
+    },
+  ],
+
+  education: {
+    institution: "Swinburne University of Technology",
+    degree: "Bachelor of Computer Science — Data Science",
+    period: "Mar 2023 — Dec 2025",
+    mode: "Full-time",
+    description:
+      "Gained deep knowledge across Computer Science while discovering a passion for building applications and software solutions that meet user needs.",
+    achievements: [
+      "HD and Distinction in Part 1 and 2 of the Final Project",
+      "HD in Computing Technology Innovation Project",
+      "HD in Computing Technology Design Project",
+      "HD in Cloud Computing Architecture",
+      "Distinction in Software Deployment and Evolution",
+      "Distinction in Computing Technology Inquiry Project",
+    ],
+  },
+
+  projects: [
+    {
+      name: "EdBright's Learning Portal",
+      period: "Aug 2025 — Present",
+      tech: [
+        "Next.js",
+        "Strapi",
+        "PostgreSQL",
+        "React Query",
+        "Tailwind CSS",
+        "Turborepo",
+        "SQLite",
+      ],
+    },
+    {
+      name: "ProofVault.Tech",
+      period: "Feb 2025 — Dec 2025",
+      tech: [
+        "Next.js",
+        "Expo",
+        "Turborepo",
+        "Tailwind CSS",
+        "shadcn/ui",
+        "Prisma",
+        "Docker",
+        "MinIO S3",
+      ],
+      link: "https://www.swinburne.edu.au/events/2025/11/capstone-project-expo-2025/#computer",
+    },
+  ],
+};
