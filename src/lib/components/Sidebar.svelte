@@ -26,11 +26,11 @@
     <!-- Name -->
     <div>
       <h1
-        class="text-xl font-bold tracking-tighter text-primary font-headline uppercase leading-none"
+        class="text-3xl font-bold tracking-tighter text-primary font-headline uppercase leading-none"
       >
         {resume.about.name}
       </h1>
-      <span class="text-[10px] text-ghost mt-2 block tracking-widest">
+      <span class="text-[11px] text-ghost mt-2 block tracking-widest">
         RESUME // 04042026
       </span>
     </div>
@@ -47,11 +47,11 @@
         {#each slides as slide}
           <li>
             <button
-              aria-current={slide.id === currentSlide ? 'page' : undefined}
+              aria-current={slide.id === currentSlide ? "page" : undefined}
               class="text-xs tracking-[0.15em] transition-colors duration-150 w-full flex items-center justify-center
                 {slide.id === currentSlide
-                  ? 'text-primary font-bold'
-                  : 'text-muted hover:text-secondary'}"
+                ? 'text-primary font-bold'
+                : 'text-muted hover:text-secondary'}"
               style="height: {ITEM_HEIGHT}px;"
               onclick={() => onNavigate(slide.id)}
             >
@@ -65,8 +65,16 @@
 
   <!-- Keyboard hint -->
   <div class="flex items-center gap-2">
-    <kbd class="text-[10px] text-muted border border-outline-subtle/50 px-1.5 py-0.5 font-mono">↑</kbd>
-    <kbd class="text-[10px] text-muted border border-outline-subtle/50 px-1.5 py-0.5 font-mono">↓</kbd>
-    <span class="text-[10px] text-ghost tracking-[0.15em] uppercase">Navigate</span>
+    <kbd
+      class="text-[11px] text-muted border border-outline-subtle/50 px-1.5 py-0.5 font-mono"
+      >↑</kbd
+    >
+    <kbd
+      class="text-[11px] text-muted border border-outline-subtle/50 px-1.5 py-0.5 font-mono"
+      >↓</kbd
+    >
+    <span class="text-[11px] text-ghost tracking-[0.15em] uppercase"
+      >Navigate</span
+    >
   </div>
 </nav>

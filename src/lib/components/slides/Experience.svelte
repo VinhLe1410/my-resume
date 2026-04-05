@@ -58,11 +58,11 @@
         aria-expanded={allExpanded}
       >
         <kbd
-          class="text-[10px] text-muted border border-outline px-1.5 py-0.5 font-mono tracking-wider"
+          class="text-[11px] text-muted border border-outline px-1.5 py-0.5 font-mono tracking-wider"
           >A</kbd
         >
         <span
-          class="text-[10px] text-muted tracking-[0.2em] uppercase group-hover:text-secondary transition-colors"
+          class="text-[11px] text-muted tracking-[0.2em] uppercase group-hover:text-secondary transition-colors"
         >
           {allExpanded ? "COLLAPSE ALL" : "EXPAND ALL"}
         </span>
@@ -82,7 +82,7 @@
             >
               <div class="flex items-baseline mb-1 gap-3">
                 <kbd
-                  class="text-[10px] text-muted border border-outline px-1.5 py-0.5 font-mono shrink-0"
+                  class="text-[11px] text-muted border border-outline px-1.5 py-0.5 font-mono shrink-0"
                   >{i + 1}</kbd
                 >
                 <h3 class="text-lg font-bold text-primary tracking-tight">
@@ -90,7 +90,7 @@
                 </h3>
               </div>
               <div class="flex items-baseline justify-between mb-3">
-                <span class="text-xs text-muted tracking-[0.15em] uppercase">
+                <span class="text-s text-muted tracking-[0.15em] uppercase">
                   {entry.company} // {entry.location}
                 </span>
                 <span
@@ -105,7 +105,7 @@
 
               <!-- Expand indicator -->
               <div class="mt-4 flex items-center gap-2">
-                <span class="text-[10px] text-ghost tracking-[0.2em] uppercase">
+                <span class="text-[11px] text-ghost tracking-[0.2em] uppercase">
                   {expanded.has(i) ? "COLLAPSE" : "EXPAND"}
                 </span>
                 <span
