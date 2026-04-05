@@ -1,9 +1,11 @@
 <script lang="ts">
+	import SlideLayout from "./SlideLayout.svelte";
+
 	let { title }: { title: string } = $props();
 </script>
 
-<div class="h-screen flex items-center justify-center">
-	<h2 class="font-headline text-5xl font-bold text-primary tracking-tighter uppercase">
-		{title}
-	</h2>
-</div>
+<SlideLayout {title}>
+	{#snippet body()}
+		<p class="text-muted text-sm tracking-widest uppercase">Content coming soon.</p>
+	{/snippet}
+</SlideLayout>
