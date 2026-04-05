@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { slide } from "svelte/transition";
-  import SlideLayout from "../SlideLayout.svelte";
-  import type { ExperienceEntry } from "$lib/data/resume";
-  import { activeSlide } from "$lib/active-slide.svelte";
+  import { slide } from 'svelte/transition';
+  import SlideLayout from '../SlideLayout.svelte';
+  import type { ExperienceEntry } from '$lib/data/resume';
+  import { activeSlide } from '$lib/active-slide.svelte';
 
   let { data }: { data: ExperienceEntry[] } = $props();
 
@@ -26,13 +26,13 @@
   }
 
   function handleKeydown(e: KeyboardEvent) {
-    if (activeSlide.id !== "experience") return;
+    if (activeSlide.id !== 'experience') return;
 
     // Ignore if user is typing in an input/textarea
     const tag = (e.target as HTMLElement)?.tagName;
-    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
 
-    if (e.key === "a" || e.key === "A") {
+    if (e.key === 'a' || e.key === 'A') {
       e.preventDefault();
       toggleAll();
       return;
@@ -57,34 +57,20 @@
         onclick={toggleAll}
         aria-expanded={allExpanded}
       >
-        <kbd
-          class="text-[11px] text-muted border border-outline px-1.5 py-0.5 font-mono tracking-wider"
-          >A</kbd
-        >
-        <span
-          class="text-[11px] text-muted tracking-[0.2em] uppercase group-hover:text-secondary transition-colors"
-        >
-          {allExpanded ? "COLLAPSE ALL" : "EXPAND ALL"}
+        <kbd class="text-[11px] text-muted border border-outline px-1.5 py-0.5 font-mono tracking-wider">A</kbd>
+        <span class="text-[11px] text-muted tracking-[0.2em] uppercase group-hover:text-secondary transition-colors">
+          {allExpanded ? 'COLLAPSE ALL' : 'EXPAND ALL'}
         </span>
       </button>
 
       <!-- Grid on large screens, stack on small -->
-      <div
-        class="grid grid-cols-1 2xl:grid-cols-2 gap-12 2xl:gap-16 items-start"
-      >
+      <div class="grid grid-cols-1 2xl:grid-cols-2 gap-12 2xl:gap-16 items-start">
         {#each data as entry, i}
           <div class="group">
             <!-- Header — always visible, clickable -->
-            <button
-              class="w-full text-left cursor-pointer"
-              onclick={() => toggle(i)}
-              aria-expanded={expanded.has(i)}
-            >
+            <button class="w-full text-left cursor-pointer" onclick={() => toggle(i)} aria-expanded={expanded.has(i)}>
               <div class="flex items-baseline mb-1 gap-3">
-                <kbd
-                  class="text-[11px] text-muted border border-outline px-1.5 py-0.5 font-mono shrink-0"
-                  >{i + 1}</kbd
-                >
+                <kbd class="text-[11px] text-muted border border-outline px-1.5 py-0.5 font-mono shrink-0">{i + 1}</kbd>
                 <h3 class="text-lg font-bold text-primary tracking-tight">
                   {entry.role}
                 </h3>
@@ -93,9 +79,7 @@
                 <span class="text-s text-muted tracking-[0.15em] uppercase">
                   {entry.company} // {entry.location}
                 </span>
-                <span
-                  class="text-xs text-muted tabular-nums shrink-0 whitespace-nowrap"
-                >
+                <span class="text-xs text-muted tabular-nums shrink-0 whitespace-nowrap">
                   {entry.period}
                 </span>
               </div>
@@ -106,12 +90,9 @@
               <!-- Expand indicator -->
               <div class="mt-4 flex items-center gap-2">
                 <span class="text-[11px] text-ghost tracking-[0.2em] uppercase">
-                  {expanded.has(i) ? "COLLAPSE" : "EXPAND"}
+                  {expanded.has(i) ? 'COLLAPSE' : 'EXPAND'}
                 </span>
-                <span
-                  class="text-ghost text-xs transition-transform duration-200"
-                  class:rotate-90={expanded.has(i)}
-                >
+                <span class="text-ghost text-xs transition-transform duration-200" class:rotate-90={expanded.has(i)}>
                   →
                 </span>
               </div>
@@ -119,14 +100,9 @@
 
             <!-- Expandable bullet list -->
             {#if expanded.has(i)}
-              <ul
-                class="mt-6 space-y-3 border-l border-outline-subtle/30 pl-6"
-                transition:slide={{ duration: 200 }}
-              >
+              <ul class="mt-6 space-y-3 border-l border-outline-subtle/30 pl-6" transition:slide={{ duration: 200 }}>
                 {#each entry.bullets as bullet}
-                  <li
-                    class="flex gap-3 text-sm text-secondary/80 leading-relaxed"
-                  >
+                  <li class="flex gap-3 text-sm text-secondary/80 leading-relaxed">
                     <span class="text-ghost shrink-0">_</span>
                     <span>{bullet}</span>
                   </li>

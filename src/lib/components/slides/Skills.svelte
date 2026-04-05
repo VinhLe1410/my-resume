@@ -1,6 +1,6 @@
 <script lang="ts">
-  import SlideLayout from "../SlideLayout.svelte";
-  import type { SkillCategory } from "$lib/data/resume";
+  import SlideLayout from '../SlideLayout.svelte';
+  import type { SkillCategory } from '$lib/data/resume';
 
   let { data }: { data: SkillCategory[] } = $props();
 </script>

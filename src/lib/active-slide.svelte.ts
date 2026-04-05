@@ -1,1 +1,1 @@
-export const activeSlide = $state({ id: "about" });
+export const activeSlide = $state({ id: 'about' });

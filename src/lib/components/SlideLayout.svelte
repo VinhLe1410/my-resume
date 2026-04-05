@@ -1,11 +1,7 @@
 <script lang="ts">
-  import type { Snippet } from "svelte";
+  import type { Snippet } from 'svelte';
 
-  let {
-    title,
-    body,
-    vertical = false,
-  }: { title: string; body: Snippet; vertical?: boolean } = $props();
+  let { title, body, vertical = false }: { title: string; body: Snippet; vertical?: boolean } = $props();
 </script>
 
 <div class="h-screen flex">
@@ -21,9 +17,7 @@
   {:else}
     <!-- Standard horizontal title — left column -->
     <div class="w-72 shrink-0 flex items-start pt-24 pl-16 pr-8">
-      <h2
-        class="font-headline text-3xl font-bold text-primary tracking-tighter uppercase leading-none"
-      >
+      <h2 class="font-headline text-3xl font-bold text-primary tracking-tighter uppercase leading-none">
         {title}
       </h2>
     </div>
