@@ -7,20 +7,22 @@
 
 <SlideLayout title="ABOUT">
 	{#snippet body()}
-		<div class="space-y-12 max-w-2xl">
+		<div class="grid grid-cols-1 2xl:grid-cols-2 gap-12 2xl:gap-16 items-start">
 			<!-- Summary -->
-			<p class="text-lg leading-relaxed text-secondary font-light">
-				{data.summary}
-			</p>
+			<div>
+				<p class="text-lg leading-relaxed text-secondary font-light">
+					{data.summary}
+				</p>
+			</div>
 
 			<!-- Key facts -->
 			<dl class="space-y-4">
 				<div class="flex justify-between border-b border-outline-subtle/20 py-3">
-					<dt class="text-[10px] text-muted tracking-[0.2em] uppercase">Location</dt>
+					<dt class="text-[10px] text-muted tracking-[0.2em] uppercase self-center">Location</dt>
 					<dd class="text-primary text-sm">{data.location}</dd>
 				</div>
 				<div class="flex justify-between border-b border-outline-subtle/20 py-3">
-					<dt class="text-[10px] text-muted tracking-[0.2em] uppercase">Email</dt>
+					<dt class="text-[10px] text-muted tracking-[0.2em] uppercase self-center">Email</dt>
 					<dd>
 						<a href="mailto:{data.email}" class="text-primary text-sm hover:underline">
 							{data.email.toUpperCase()}
@@ -28,11 +30,11 @@
 					</dd>
 				</div>
 				<div class="flex justify-between border-b border-outline-subtle/20 py-3">
-					<dt class="text-[10px] text-muted tracking-[0.2em] uppercase">Phone</dt>
+					<dt class="text-[10px] text-muted tracking-[0.2em] uppercase self-center">Phone</dt>
 					<dd class="text-primary text-sm">{data.phone}</dd>
 				</div>
 				<div class="flex justify-between border-b border-outline-subtle/20 py-3">
-					<dt class="text-[10px] text-muted tracking-[0.2em] uppercase">GitHub</dt>
+					<dt class="text-[10px] text-muted tracking-[0.2em] uppercase self-center">GitHub</dt>
 					<dd>
 						<a
 							href={data.github}

@@ -19,9 +19,14 @@ export interface ExperienceEntry {
   bullets: string[];
 }
 
+export interface SkillItem {
+  name: string;
+  pinned?: boolean;
+}
+
 export interface SkillCategory {
   label: string;
-  items: string[];
+  items: SkillItem[];
 }
 
 export interface Education {
@@ -92,7 +97,7 @@ export const resume: Resume = {
         "Tech Lead & primary Full-Stack Developer for a multi-role educational web application.",
         "Designed and enforced front-end and back-end architecture, including folder structure, data flow, and API integration.",
         "Led major codebase refactors, adopting React Query for server-state management to improve performance, caching, and maintainability.",
-        "Built responsive and accessible UIs using Tailwind CSS and shadcn/ui, focusing on child-friendly, interactive user experiences.",
+        "Built responsive and accessible UIs using Tailwind CSS, focusing on child-friendly, interactive user experiences.",
         "Translated business and educational requirements into database schema design and back-end logic.",
         "Used AI-assisted tooling during refactors to plan, validate, and implement changes while preserving existing functionality and code standards.",
         "Supporting deployment and post-release technical issues, assisting stakeholders with configuration and troubleshooting.",
@@ -104,72 +109,94 @@ export const resume: Resume = {
     {
       label: "AWS Services",
       items: [
-        "Lambda",
-        "Route 53",
-        "CloudFormation",
-        "AWS Amplify",
-        "EC2",
-        "DynamoDB",
-        "Cognito",
-        "Secrets Manager",
-        "CloudWatch",
-        "SQS",
-        "SNS",
-        "API Gateway",
-        "S3",
+        { name: "Lambda", pinned: true },
+        { name: "Route 53", pinned: true },
+        { name: "CloudFormation", pinned: true },
+        { name: "AWS Amplify", pinned: true },
+        { name: "DynamoDB", pinned: true },
+        { name: "Cognito", pinned: true },
+        { name: "Secrets Manager", pinned: true },
+        { name: "CloudWatch", pinned: true },
+        { name: "SQS", pinned: true },
+        { name: "SNS", pinned: true },
+        { name: "API Gateway", pinned: true },
+        { name: "S3", pinned: true },
+        { name: "EC2" },
       ],
     },
     {
       label: "Web Frameworks & Runtimes",
       items: [
-        "Next.js",
-        "React",
-        "Vue.js",
-        "SvelteKit",
-        "Expo",
-        "tRPC",
-        "Tailwind CSS",
-        "shadcn/ui",
-        "React Query",
-        "Turborepo",
-        "Nx Monorepo",
-        "Node.js",
-        "Bun",
+        { name: "Next.js", pinned: true },
+        { name: "React", pinned: true },
+        { name: "Tailwind CSS", pinned: true },
+        { name: "React Query", pinned: true },
+        { name: "SvelteKit", pinned: true },
+        { name: "Nx Monorepo", pinned: true },
+        { name: "Node.js", pinned: true },
+        { name: "Bun", pinned: true },
+        { name: "Vue.js" },
+        { name: "Expo" },
+        { name: "tRPC" },
+        { name: "Turborepo" },
       ],
     },
     {
       label: "Tools",
-      items: ["Figma", "Postman", "Docker", "OrbStack", "Draw.io"],
+      items: [
+        { name: "Docker", pinned: true },
+        { name: "Claude Code", pinned: true },
+        { name: "Pi Agent", pinned: true },
+        { name: "Excalidraw", pinned: true },
+        { name: "Postman", pinned: true },
+        { name: "OrbStack", pinned: true },
+        { name: "Figma" },
+        { name: "Draw.io" },
+      ],
     },
     {
       label: "Languages",
       items: [
-        "JavaScript",
-        "TypeScript",
-        "C++",
-        "Ruby",
-        "SQL",
-        "HTML",
-        "PHP",
-        "CSS",
-        "Svelte",
+        { name: "JavaScript", pinned: true },
+        { name: "TypeScript", pinned: true },
+        { name: "C++" },
+        { name: "Ruby" },
+        { name: "SQL" },
+        { name: "HTML" },
+        { name: "PHP" },
+        { name: "CSS" },
+        { name: "Svelte" },
       ],
     },
     {
       label: "Databases",
-      items: ["MySQL", "PostgreSQL", "SQLite", "NoSQL"],
+      items: [
+        { name: "MySQL" },
+        { name: "PostgreSQL" },
+        { name: "SQLite" },
+        { name: "NoSQL" },
+      ],
     },
     {
       label: "Project Management",
-      items: ["Jira", "GitHub Issues", "GitHub Projects"],
+      items: [{ name: "Jira", pinned: true }],
     },
     {
       label: "CI/CD",
-      items: ["GitHub Actions", "GitHub", "GitLab"],
+      items: [
+        { name: "GitHub", pinned: true },
+        { name: "GitHub Actions", pinned: true },
+        { name: "GitLab" },
+      ],
     },
     {
       label: "IDEs",
-      items: ["VS Code", "Cursor", "Zed", "NeoVim"],
+      items: [
+        { name: "VS Code", pinned: true },
+        { name: "Cursor", pinned: true },
+        { name: "Zed", pinned: true },
+        { name: "NeoVim" },
+      ],
     },
   ],
 
@@ -212,7 +239,6 @@ export const resume: Resume = {
         "Expo",
         "Turborepo",
         "Tailwind CSS",
-        "shadcn/ui",
         "Prisma",
         "Docker",
         "MinIO S3",
