@@ -5,7 +5,7 @@
 	let { data }: { data: About } = $props();
 </script>
 
-<SlideLayout title="ABOUT">
+<SlideLayout title="ABOUT" vertical>
 	{#snippet body()}
 		<div class="grid grid-cols-1 2xl:grid-cols-2 gap-12 2xl:gap-16 items-start">
 			<!-- Summary -->

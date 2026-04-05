@@ -5,7 +5,7 @@
   let { data }: { data: SkillCategory[] } = $props();
 </script>
 
-<SlideLayout title="SKILLS">
+<SlideLayout title="SKILLS" vertical>
   {#snippet body()}
     <div>
       <!-- Legend -->

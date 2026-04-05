@@ -5,7 +5,7 @@
 	let { data }: { data: Education } = $props();
 </script>
 
-<SlideLayout title="EDUCATION">
+<SlideLayout title="EDUCATION" vertical>
 	{#snippet body()}
 		<div class="max-w-2xl space-y-10">
 			<!-- Degree info -->

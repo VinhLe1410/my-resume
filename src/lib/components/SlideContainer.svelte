@@ -17,8 +17,8 @@
 		{#key slide.id}
 			<div
 				class="h-screen"
-				in:fly={{ y: direction * 40, duration: 250, easing: cubicOut }}
-				out:fly={{ y: direction * -40, duration: 200, easing: cubicIn }}
+				in:fly={{ y: direction * 40, duration: 150, easing: cubicOut }}
+				out:fly={{ y: direction * -40, duration: 100, easing: cubicIn }}
 			>
 				<Component {...slide.props} />
 			</div>

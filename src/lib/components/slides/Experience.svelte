@@ -45,7 +45,7 @@
 
 <svelte:window onkeydown={handleKeydown} />
 
-<SlideLayout title="EXPERIENCE">
+<SlideLayout title="EXPERIENCE" vertical>
   {#snippet body()}
     <div>
       <!-- Toggle-all hint -->
