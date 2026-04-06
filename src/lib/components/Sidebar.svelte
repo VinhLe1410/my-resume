@@ -12,14 +12,16 @@
     onNavigate: (id: string) => void;
   } = $props();
 
-  const ITEM_HEIGHT = 36;
-  const ITEM_GAP = 8;
+  const ITEM_HEIGHT = 30;
+  const ITEM_GAP = 2;
 
   const activeIndex = $derived(slides.findIndex((s) => s.id === currentSlide));
   const highlightY = $derived(activeIndex * (ITEM_HEIGHT + ITEM_GAP));
 </script>
 
-<nav class="fixed left-0 top-0 h-full w-60 bg-surface-dim flex flex-col py-12 px-8 items-center justify-between z-50">
+<nav
+  class="fixed left-0 top-0 h-full w-(--sidebar-w) bg-surface-dim flex flex-col py-12 px-(--sidebar-px) items-center justify-between z-50"
+>
   <div class="space-y-12 text-center">
     <!-- Name -->
     <div>
@@ -33,8 +35,8 @@
     <div class="relative">
       <!-- Sliding highlight box -->
       <div
-        class="absolute -left-2 -right-2 border border-primary transition-transform duration-200 ease-out pointer-events-none"
-        style="height: {ITEM_HEIGHT}px; transform: translateY({highlightY}px);"
+        class="highlight absolute border border-primary pointer-events-none"
+        style="left: var(--sidebar-highlight-inset); right: var(--sidebar-highlight-inset); height: {ITEM_HEIGHT}px; transform: translateY({highlightY}px);"
       ></div>
 
       <ul class="flex flex-col" style="gap: {ITEM_GAP}px;">
@@ -62,3 +64,14 @@
     <span class="text-[11px] text-ghost tracking-[0.15em] uppercase">Navigate</span>
   </div>
 </nav>
+
+<style>
+  nav {
+    transition:
+      width 300ms ease,
+      padding 300ms ease;
+  }
+  .highlight {
+    transition: transform 200ms ease-out;
+  }
+</style>

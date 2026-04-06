@@ -8,7 +8,7 @@
   const Component = $derived(slide.component);
 </script>
 
-<main class="ml-60 flex-1 h-screen bg-surface slide-stack overflow-hidden">
+<main class="ml-(--sidebar-w) flex-1 h-screen bg-surface slide-stack overflow-hidden">
   {#if animate}
     {#key slide.id}
       <div
@@ -30,6 +30,7 @@
   .slide-stack {
     display: grid;
     grid-template: 1fr / 1fr;
+    transition: margin-left 300ms ease;
   }
   .slide-stack > :global(*) {
     grid-row: 1;
