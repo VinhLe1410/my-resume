@@ -1,42 +1,32 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import type { SlideConfig } from '$lib/slides';
   import { fly } from 'svelte/transition';
   import { cubicOut, cubicIn } from 'svelte/easing';
+  import { device } from '$lib/device.svelte.ts';
 
   let { slide, direction, animate }: { slide: SlideConfig; direction: number; animate: boolean } = $props();
 
   const Component = $derived(slide.component);
 
-  // Detect mobile for horizontal vs vertical transitions
-  let isMobile = $state(false);
-
-  onMount(() => {
-    const mq = window.matchMedia('(max-width: 768px)');
-    isMobile = mq.matches;
-
-    const handler = (e: MediaQueryListEvent) => {
-      isMobile = e.matches;
-    };
-    mq.addEventListener('change', handler);
-    return () => mq.removeEventListener('change', handler);
-  });
-
-  // Transition config based on device
+  // Transition config based on layout mode
   const transitionIn = $derived(
-    isMobile
+    device.useMobileLayout
       ? { x: direction * 40, duration: 150, easing: cubicOut }
       : { y: direction * 40, duration: 150, easing: cubicOut },
   );
 
   const transitionOut = $derived(
-    isMobile
+    device.useMobileLayout
       ? { x: direction * -40, duration: 100, easing: cubicIn }
       : { y: direction * -40, duration: 100, easing: cubicIn },
   );
 </script>
 
-<main class="ml-(--sidebar-w) flex-1 h-screen bg-surface slide-stack overflow-hidden">
+<main
+  class="flex-1 h-screen bg-surface slide-stack overflow-hidden"
+  class:ml-0={device.useMobileLayout}
+  style={device.useMobileLayout ? '' : 'margin-left: var(--sidebar-w)'}
+>
   {#if animate}
     {#key slide.id}
       <div class="h-screen" in:fly={transitionIn} out:fly={transitionOut}>

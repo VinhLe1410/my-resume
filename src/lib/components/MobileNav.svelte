@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { SlideConfig } from '$lib/slides';
   import { X } from '@lucide/svelte';
+  import { device } from '$lib/device.svelte';
 
   let {
     slides,
@@ -39,14 +40,14 @@
   tabindex={expanded ? 0 : -1}
 ></button>
 
-<!-- FAB Container (mobile only) -->
-<div class="fixed bottom-6 right-6 z-50 md:hidden">
+<!-- FAB Container (mobile layout only) -->
+<div class="fixed bottom-6 right-6 z-50" class:hidden={!device.useMobileLayout}>
   <!-- Morphing container -->
   <div
     class="fab-container bg-surface border border-outline-subtle/50 flex flex-col overflow-hidden transition-all duration-200 ease-out"
     style="
       width: 170px;
-      height: {expanded ? `${47 + slides.length * 52}px` : '48px'};
+      height: {expanded ? `${47 + slides.length * 52 + (!device.isActualMobile ? 40 : 0)}px` : '48px'};
       border-radius: 1rem;
       padding: {expanded ? '0.5rem' : '0'};
       gap: {expanded ? '0.25rem' : '0'};
@@ -107,6 +108,25 @@
         <span class="text-sm flex-1 text-right">{slide.label}</span>
       </button>
     {/each}
+
+    <!-- Desktop toggle (only for desktop users in mobile mode) -->
+    {#if !device.isActualMobile}
+      <button
+        class="shrink-0 h-9 px-3 flex items-center justify-center rounded-xl text-xs tracking-[0.1em] uppercase text-muted border border-outline-subtle/50 hover:text-primary hover:border-primary transition-all duration-150"
+        style="
+          opacity: {expanded ? 1 : 0};
+          pointer-events: {expanded ? 'auto' : 'none'};
+          transition-delay: {expanded ? slides.length * 30 : 0}ms;
+        "
+        onclick={() => {
+          device.toggleLayoutMode();
+          expanded = false;
+        }}
+        tabindex={expanded ? 0 : -1}
+      >
+        Desktop View
+      </button>
+    {/if}
   </div>
 </div>
 
