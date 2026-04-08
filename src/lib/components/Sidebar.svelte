@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { SlideConfig } from '$lib/slides';
   import { resume } from '$lib/data/resume';
+  import { device } from '$lib/device.svelte';
 
   let {
     slides,
@@ -20,7 +21,9 @@
 </script>
 
 <nav
-  class="fixed left-0 top-0 h-full w-(--sidebar-w) bg-surface-dim flex-col py-12 px-(--sidebar-px) items-center justify-between z-50 hidden md:flex"
+  class="fixed left-0 top-0 h-full w-(--sidebar-w) bg-surface-dim flex-col py-12 px-(--sidebar-px) items-center justify-between z-50"
+  class:hidden={device.useMobileLayout}
+  class:flex={!device.useMobileLayout}
 >
   <div class="space-y-12 text-center">
     <!-- Name -->
@@ -57,11 +60,19 @@
     </div>
   </div>
 
-  <!-- Keyboard hint -->
-  <div class="flex items-center gap-2">
-    <kbd class="text-[11px] text-muted border border-outline-subtle/50 px-1.5 py-0.5 font-mono">↑</kbd>
-    <kbd class="text-[11px] text-muted border border-outline-subtle/50 px-1.5 py-0.5 font-mono">↓</kbd>
-    <span class="text-[11px] text-ghost tracking-[0.15em] uppercase">Navigate</span>
+  <!-- Keyboard hint + mobile toggle -->
+  <div class="flex flex-col items-center gap-3">
+    <div class="flex items-center gap-2">
+      <kbd class="text-[11px] text-muted border border-outline-subtle/50 px-1.5 py-0.5 font-mono">↑</kbd>
+      <kbd class="text-[11px] text-muted border border-outline-subtle/50 px-1.5 py-0.5 font-mono">↓</kbd>
+      <span class="text-[11px] text-ghost tracking-[0.15em] uppercase">Navigate</span>
+    </div>
+    <button
+      class="text-[11px] text-muted border border-outline-subtle/50 px-2 py-1 tracking-[0.1em] uppercase hover:text-primary hover:border-primary transition-colors duration-150"
+      onclick={() => device.toggleLayoutMode()}
+    >
+      Mobile View
+    </button>
   </div>
 </nav>
 
