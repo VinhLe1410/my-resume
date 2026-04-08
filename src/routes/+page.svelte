@@ -3,8 +3,11 @@
   import { browser } from '$app/environment';
   import Sidebar from '$lib/components/Sidebar.svelte';
   import SlideContainer from '$lib/components/SlideContainer.svelte';
+  import MobileNav from '$lib/components/MobileNav.svelte';
   import { slides } from '$lib/slides';
   import { activeSlide } from '$lib/active-slide.svelte';
+
+  const SWIPE_THRESHOLD = 50;
 
   function getInitialSlide(): string {
     if (browser) {
@@ -46,6 +49,35 @@
     }
   }
 
+  // Swipe gesture handling
+  let touchStartX = 0;
+  let touchStartY = 0;
+
+  function handleTouchStart(e: TouchEvent) {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }
+
+  function handleTouchEnd(e: TouchEvent) {
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+    const deltaX = touchEndX - touchStartX;
+    const deltaY = touchEndY - touchStartY;
+
+    // Only trigger if horizontal swipe is dominant
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > SWIPE_THRESHOLD) {
+      const currentIndex = slides.findIndex((s) => s.id === currentSlide);
+
+      if (deltaX < 0 && currentIndex < slides.length - 1) {
+        // Swipe left -> next slide
+        navigate(slides[currentIndex + 1].id);
+      } else if (deltaX > 0 && currentIndex > 0) {
+        // Swipe right -> prev slide
+        navigate(slides[currentIndex - 1].id);
+      }
+    }
+  }
+
   $effect(() => {
     activeSlide.id = currentSlide;
   });
@@ -61,7 +93,9 @@
 
 <svelte:window onkeydown={handleKeydown} />
 
-<div class="flex" class:opacity-0={!ready}>
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<div class="flex" class:opacity-0={!ready} ontouchstart={handleTouchStart} ontouchend={handleTouchEnd}>
   <Sidebar {slides} {currentSlide} onNavigate={navigate} />
   <SlideContainer slide={currentSlideConfig} {direction} {animate} />
+  <MobileNav {slides} {currentSlide} onNavigate={navigate} />
 </div>

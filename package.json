@@ -39,7 +39,8 @@
   },
   "dependencies": {
     "@fontsource/jetbrains-mono": "^5.2.8",
-    "@fontsource/space-grotesk": "^5.2.10"
+    "@fontsource/space-grotesk": "^5.2.10",
+    "@lucide/svelte": "^1.7.0"
   },
   "lint-staged": {
     "*.{js,ts,svelte}": [

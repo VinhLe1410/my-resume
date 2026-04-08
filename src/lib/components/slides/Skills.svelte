@@ -9,16 +9,16 @@
   {#snippet body()}
     <div>
       <!-- Legend -->
-      <div class="flex items-center gap-4 mb-10">
+      <div class="flex items-center gap-4 mb-5 md:mb-10">
         <span class="inline-block w-2 h-2 border border-primary"></span>
         <span class="text-xs text-muted tracking-[0.15em] uppercase">Active in the past 6 months</span>
       </div>
 
       <!-- Category grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-x-16 gap-y-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-x-8 md:gap-x-16 gap-y-6 md:gap-y-12">
         {#each data as category (category.label)}
           <div>
-            <h4 class="text-xs text-muted tracking-[0.15em] uppercase mb-5">
+            <h4 class="text-xs text-muted tracking-[0.15em] uppercase mb-3 md:mb-5">
               {category.label}
             </h4>
             <div class="flex flex-wrap gap-2.5">

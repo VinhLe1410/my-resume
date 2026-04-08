@@ -20,7 +20,7 @@
 </script>
 
 <nav
-  class="fixed left-0 top-0 h-full w-(--sidebar-w) bg-surface-dim flex flex-col py-12 px-(--sidebar-px) items-center justify-between z-50"
+  class="fixed left-0 top-0 h-full w-(--sidebar-w) bg-surface-dim flex-col py-12 px-(--sidebar-px) items-center justify-between z-50 hidden md:flex"
 >
   <div class="space-y-12 text-center">
     <!-- Name -->

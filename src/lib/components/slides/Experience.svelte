@@ -47,10 +47,10 @@
 
 <SlideLayout title="EXPERIENCE" vertical>
   {#snippet body()}
-    <div>
-      <!-- Toggle-all hint -->
+    <div class="relative">
+      <!-- Toggle-all hint (desktop only) -->
       <button
-        class="flex items-center gap-3 cursor-pointer group mb-10"
+        class="hidden md:flex items-center gap-3 cursor-pointer group mb-5 md:mb-10"
         onclick={toggleAll}
         aria-expanded={allExpanded}
       >
@@ -61,22 +61,23 @@
       </button>
 
       <!-- Grid on large screens, stack on small -->
-      <div class="grid grid-cols-1 2xl:grid-cols-2 gap-12 2xl:gap-16 items-start">
+      <div class="grid grid-cols-1 2xl:grid-cols-2 gap-6 md:gap-12 2xl:gap-16 items-start">
         {#each data as entry, i (entry.company)}
           <div class="group">
             <!-- Header — always visible, clickable -->
             <button class="w-full text-left cursor-pointer" onclick={() => toggle(i)} aria-expanded={expanded.has(i)}>
               <div class="flex items-baseline mb-1 gap-3">
                 <kbd class="text-[11px] text-muted border border-outline px-1.5 py-0.5 font-mono shrink-0">{i + 1}</kbd>
-                <h3 class="text-lg font-bold text-primary tracking-tight">
+                <h3 class="text-base md:text-lg font-bold text-primary tracking-tight">
                   {entry.role}
                 </h3>
               </div>
-              <div class="flex items-baseline justify-between mb-3">
-                <span class="text-s text-muted tracking-[0.15em] uppercase">
+              <!-- Desktop: inline row | Mobile: stacked -->
+              <div class="flex flex-col md:flex-row md:items-baseline md:justify-between mb-3 gap-1 md:gap-0">
+                <span class="text-xs md:text-s text-muted tracking-[0.15em] uppercase">
                   {entry.company} // {entry.location}
                 </span>
-                <span class="text-xs text-muted tabular-nums shrink-0 whitespace-nowrap">
+                <span class="text-xs text-muted tabular-nums">
                   {entry.period}
                 </span>
               </div>
@@ -109,6 +110,15 @@
           </div>
         {/each}
       </div>
+
+      <!-- Mobile floating expand-all button -->
+      <button
+        class="md:hidden fixed bottom-6 left-6 z-40 bg-surface border border-outline-subtle/50 rounded-full px-4 py-2 flex items-center gap-2 text-xs text-muted tracking-[0.15em] uppercase hover:text-primary hover:bg-surface-high transition-all active:scale-95"
+        onclick={toggleAll}
+        aria-expanded={allExpanded}
+      >
+        {allExpanded ? 'COLLAPSE' : 'EXPAND'}
+      </button>
     </div>
   {/snippet}
 </SlideLayout>

@@ -50,12 +50,21 @@
   --sidebar-w: 15rem;
   --sidebar-px: 2rem;
   --sidebar-highlight-inset: clamp(-0.5rem, calc(-1vw + 6px), -0.25rem);
+  --mobile-breakpoint: 768px;
+  --is-mobile: 0;
 }
 
 @media (max-width: 1080px) {
   :root {
     --sidebar-w: 11rem;
     --sidebar-px: 1.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --sidebar-w: 0rem;
+    --is-mobile: 1;
   }
 }
 
