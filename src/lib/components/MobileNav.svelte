@@ -112,7 +112,7 @@
     <!-- Desktop toggle (only for desktop users in mobile mode) -->
     {#if !device.isActualMobile}
       <button
-        class="shrink-0 h-9 px-3 flex items-center justify-center rounded-xl text-xs tracking-[0.1em] uppercase text-muted border border-outline-subtle/50 hover:text-primary hover:border-primary transition-all duration-150"
+        class="shrink-0 h-9 px-3 flex items-center justify-center rounded-xl text-xs tracking-widest uppercase text-muted border border-outline-subtle/50 hover:text-primary hover:border-primary transition-all duration-150"
         style="
           opacity: {expanded ? 1 : 0};
           pointer-events: {expanded ? 'auto' : 'none'};

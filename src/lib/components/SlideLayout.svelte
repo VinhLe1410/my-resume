@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import { onMount } from 'svelte';
-  import { device } from '$lib/device.svelte.ts';
+  import { device } from '$lib/device.svelte';
 
   let { title, body, vertical = true }: { title: string; body: Snippet; vertical?: boolean } = $props();
 
@@ -18,15 +18,6 @@
 </script>
 
 <div class="relative h-screen overflow-hidden">
-  <h2
-    class="morphing-title font-headline font-bold tracking-tighter uppercase leading-none select-none"
-    class:is-pillar={titleMode === 'pillar'}
-    class:is-banner={titleMode === 'banner'}
-    class:no-transition={!ready}
-  >
-    {title}
-  </h2>
-
   <div
     class="morphing-body absolute inset-0 overflow-y-auto"
     class:is-pillar={titleMode === 'pillar'}
@@ -36,6 +27,23 @@
   >
     {@render body()}
   </div>
+
+  <div
+    class="morphing-backdrop"
+    class:is-pillar={titleMode === 'pillar'}
+    class:is-banner={titleMode === 'banner'}
+    class:no-transition={!ready}
+    aria-hidden="true"
+  ></div>
+
+  <h2
+    class="morphing-title font-headline font-bold tracking-tighter uppercase leading-none select-none"
+    class:is-pillar={titleMode === 'pillar'}
+    class:is-banner={titleMode === 'banner'}
+    class:no-transition={!ready}
+  >
+    {title}
+  </h2>
 </div>
 
 <style>
@@ -48,9 +56,39 @@
       transform 300ms ease,
       font-size 300ms ease,
       color 300ms ease;
-    z-index: 1;
+    z-index: 2;
     /* Prevent the rotated box from forcing a line break at narrow containers. */
     white-space: nowrap;
+  }
+
+  .morphing-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5rem;
+    z-index: 1; /* above body, below title */
+    pointer-events: none;
+    background-color: rgb(from var(--color-surface) r g b / 0.6);
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+    border-bottom: 1px solid rgb(from var(--color-outline-subtle) r g b / 0.5);
+    /* Soft fade at the bottom edge so the cutoff isn't a hard line. */
+    mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+    transition:
+      opacity 300ms ease,
+      transform 300ms ease;
+  }
+
+  .morphing-backdrop.is-pillar {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+
+  .morphing-backdrop.is-banner {
+    opacity: 1;
+    transform: translateY(0);
   }
 
   .morphing-title.is-pillar {
@@ -85,11 +123,11 @@
   }
 
   .morphing-body.is-banner {
-    padding: 4rem 2rem 3rem 2rem;
+    padding: 5rem 2rem 3rem 2rem;
   }
 
   .morphing-body.is-mobile {
-    padding: 4rem 1rem 5rem 1rem;
+    padding: 5rem 1rem 5rem 1rem;
   }
 
   .no-transition {

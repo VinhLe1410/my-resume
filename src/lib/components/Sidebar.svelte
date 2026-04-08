@@ -68,7 +68,7 @@
       <span class="text-[11px] text-ghost tracking-[0.15em] uppercase">Navigate</span>
     </div>
     <button
-      class="text-[11px] text-muted border border-outline-subtle/50 px-2 py-1 tracking-[0.1em] uppercase hover:text-primary hover:border-primary transition-colors duration-150"
+      class="text-[11px] text-muted border border-outline-subtle/50 px-2 py-1 tracking-widest uppercase hover:text-primary hover:border-primary transition-colors duration-150"
       onclick={() => device.toggleLayoutMode()}
     >
       Mobile View
