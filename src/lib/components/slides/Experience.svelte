@@ -1,9 +1,10 @@
 <script lang="ts">
   import { slide } from 'svelte/transition';
   import { SvelteSet } from 'svelte/reactivity';
-  import SlideLayout from '../SlideLayout.svelte';
-  import type { ExperienceEntry } from '$lib/data/resume';
   import { activeSlide } from '$lib/active-slide.svelte';
+  import type { ExperienceEntry } from '$lib/data/resume';
+  import { viewportBlock } from '$lib/viewport-block.svelte';
+  import SlideLayout from '../SlideLayout.svelte';
 
   let { data }: { data: ExperienceEntry[] } = $props();
 
@@ -23,6 +24,7 @@
   }
 
   function handleKeydown(e: KeyboardEvent) {
+    if (viewportBlock.active) return;
     if (activeSlide.id !== 'experience') return;
 
     // Ignore if user is typing in an input/textarea
