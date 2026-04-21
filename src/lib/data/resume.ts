@@ -1,13 +1,14 @@
 // ── Types ──────────────────────────────────────────────
 
+export type AboutContactRow =
+  | { kind: 'text'; label: string; value: string }
+  | { kind: 'email'; label: string; address: string }
+  | { kind: 'link'; label: string; href: string; text?: string };
+
 export interface About {
   name: string;
-  tagline: string;
   summary: string;
-  location: string;
-  github: string;
-  email: string;
-  phone: string;
+  contact: AboutContactRow[];
 }
 
 export interface ExperienceEntry {
@@ -50,13 +51,15 @@ export interface Resume {
 export const resume: Resume = {
   about: {
     name: 'Vinh Le',
-    tagline: 'Full Stack Developer',
     summary:
       'Computer Science graduate with a background in Data Science and hands-on experience in full-stack software development and cloud-based systems. Experienced in building and deploying web applications, automation workflows, and AWS infrastructure using modern frameworks and CI/CD practices. Strong interest in developing scalable, user-focused solutions.',
-    location: 'VIC, Australia',
-    github: 'https://github.com/VinhLe1410',
-    email: 'lpvinh2k4@gmail.com',
-    phone: '+61 433 443 221',
+    contact: [
+      { kind: 'text', label: 'Location', value: 'VIC, Australia' },
+      { kind: 'email', label: 'Email', address: 'lpvinh2k4@gmail.com' },
+      { kind: 'text', label: 'Phone', value: '+61 433 443 221' },
+      { kind: 'link', label: 'GitHub', href: 'https://github.com/VinhLe1410' },
+      { kind: 'link', label: 'LinkedIn', href: 'https://linkedin.com/in/vinhle1410' },
+    ],
   },
 
   experience: [

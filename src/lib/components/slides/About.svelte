@@ -1,8 +1,12 @@
 <script lang="ts">
-  import SlideLayout from '../SlideLayout.svelte';
+  import SlideLayout from '$lib/components/SlideLayout.svelte';
   import type { About } from '$lib/data/resume';
 
   let { data }: { data: About } = $props();
+
+  function linkAnchorText(href: string, text?: string) {
+    return text ?? href.replace(/^https?:\/\//, '');
+  }
 </script>
 
 <SlideLayout title="ABOUT" vertical>
@@ -17,35 +21,26 @@
 
       <!-- Key facts -->
       <dl class="space-y-4">
-        <div class="flex justify-between border-b border-outline-subtle/20 py-3">
-          <dt class="text-[11px] text-muted tracking-[0.2em] uppercase self-center">Location</dt>
-          <dd class="text-primary text-sm">{data.location}</dd>
-        </div>
-        <div class="flex justify-between border-b border-outline-subtle/20 py-3">
-          <dt class="text-[11px] text-muted tracking-[0.2em] uppercase self-center">Email</dt>
-          <dd>
-            <a href="mailto:{data.email}" class="text-primary text-sm hover:underline">
-              {data.email.toUpperCase()}
-            </a>
-          </dd>
-        </div>
-        <div class="flex justify-between border-b border-outline-subtle/20 py-3">
-          <dt class="text-[11px] text-muted tracking-[0.2em] uppercase self-center">Phone</dt>
-          <dd class="text-primary text-sm">{data.phone}</dd>
-        </div>
-        <div class="flex justify-between border-b border-outline-subtle/20 py-3">
-          <dt class="text-[11px] text-muted tracking-[0.2em] uppercase self-center">GitHub</dt>
-          <dd>
-            <a
-              href={data.github}
-              target="_blank"
-              rel="noopener noreferrer external"
-              class="text-primary text-sm hover:underline"
-            >
-              {data.github.replace('https://', '')}
-            </a>
-          </dd>
-        </div>
+        {#each data.contact as row, i (`${row.kind}-${row.label}-${i}`)}
+          <div class="flex justify-between border-b border-outline-subtle/20 py-3">
+            <dt class="text-[11px] text-muted tracking-[0.2em] uppercase self-center">
+              {row.label}
+            </dt>
+            <dd class="text-primary text-sm">
+              {#if row.kind === 'text'}
+                {row.value}
+              {:else if row.kind === 'email'}
+                <a href="mailto:{row.address}" class="hover:underline">
+                  {row.address.toUpperCase()}
+                </a>
+              {:else}
+                <a href={row.href} target="_blank" rel="noopener noreferrer external" class="hover:underline">
+                  {linkAnchorText(row.href, row.text)}
+                </a>
+              {/if}
+            </dd>
+          </div>
+        {/each}
       </dl>
     </div>
   {/snippet}

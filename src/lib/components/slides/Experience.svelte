@@ -1,51 +1,21 @@
 <script lang="ts">
   import { slide } from 'svelte/transition';
-  import { SvelteSet } from 'svelte/reactivity';
-  import { activeSlide } from '$lib/active-slide.svelte';
   import type { ExperienceEntry } from '$lib/data/resume';
-  import { viewportBlock } from '$lib/viewport-block.svelte';
-  import SlideLayout from '../SlideLayout.svelte';
+  import { experienceState } from '$lib/experience-state.svelte';
+  import SlideLayout from '$lib/components/SlideLayout.svelte';
 
   let { data }: { data: ExperienceEntry[] } = $props();
 
-  const expanded = new SvelteSet<number>();
-
-  const allExpanded = $derived(expanded.size === data.length);
+  const allExpanded = $derived(experienceState.isAllExpanded(data.length));
 
   function toggle(index: number) {
-    if (expanded.has(index)) expanded.delete(index);
-    else expanded.add(index);
+    experienceState.toggle(index);
   }
 
   function toggleAll() {
-    const wasAllExpanded = allExpanded;
-    expanded.clear();
-    if (!wasAllExpanded) data.forEach((_, i) => expanded.add(i));
-  }
-
-  function handleKeydown(e: KeyboardEvent) {
-    if (viewportBlock.active) return;
-    if (activeSlide.id !== 'experience') return;
-
-    // Ignore if user is typing in an input/textarea
-    const tag = (e.target as HTMLElement)?.tagName;
-    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
-
-    if (e.key === 'a' || e.key === 'A') {
-      e.preventDefault();
-      toggleAll();
-      return;
-    }
-
-    const num = parseInt(e.key);
-    if (num >= 1 && num <= data.length) {
-      e.preventDefault();
-      toggle(num - 1);
-    }
+    experienceState.toggleAll(data.length);
   }
 </script>
-
-<svelte:window onkeydown={handleKeydown} />
 
 <SlideLayout title="EXPERIENCE" vertical>
   {#snippet body()}
@@ -67,7 +37,11 @@
         {#each data as entry, i (entry.company)}
           <div class="group">
             <!-- Header — always visible, clickable -->
-            <button class="w-full text-left cursor-pointer" onclick={() => toggle(i)} aria-expanded={expanded.has(i)}>
+            <button
+              class="w-full text-left cursor-pointer"
+              onclick={() => toggle(i)}
+              aria-expanded={experienceState.isExpanded(i)}
+            >
               <div class="flex items-baseline mb-1 gap-3">
                 <kbd class="text-[11px] text-muted border border-outline px-1.5 py-0.5 font-mono shrink-0">{i + 1}</kbd>
                 <h3 class="text-lg font-bold text-primary tracking-tight">
@@ -75,7 +49,7 @@
                 </h3>
               </div>
               <div class="flex items-baseline justify-between mb-3">
-                <span class="text-s text-muted tracking-[0.15em] uppercase">
+                <span class="text-xs text-muted tracking-[0.15em] uppercase">
                   {entry.company} // {entry.location}
                 </span>
                 <span class="text-xs text-muted tabular-nums shrink-0 whitespace-nowrap">
@@ -89,16 +63,19 @@
               <!-- Expand indicator -->
               <div class="mt-4 flex items-center gap-2">
                 <span class="text-[11px] text-ghost tracking-[0.2em] uppercase">
-                  {expanded.has(i) ? 'COLLAPSE' : 'EXPAND'}
+                  {experienceState.isExpanded(i) ? 'COLLAPSE' : 'EXPAND'}
                 </span>
-                <span class="text-ghost text-xs transition-transform duration-200" class:rotate-90={expanded.has(i)}>
+                <span
+                  class="text-ghost text-xs transition-transform duration-200"
+                  class:rotate-90={experienceState.isExpanded(i)}
+                >
                   →
                 </span>
               </div>
             </button>
 
             <!-- Expandable bullet list -->
-            {#if expanded.has(i)}
+            {#if experienceState.isExpanded(i)}
               <ul class="mt-6 space-y-3 border-l border-outline-subtle/30 pl-6" transition:slide={{ duration: 200 }}>
                 {#each entry.bullets as bullet, j (j)}
                   <li class="flex gap-3 text-sm text-secondary/80 leading-relaxed">

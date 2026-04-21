@@ -1,5 +1,5 @@
 <script lang="ts">
-  import SlideLayout from '../SlideLayout.svelte';
+  import SlideLayout from '$lib/components/SlideLayout.svelte';
   import type { Education } from '$lib/data/resume';
 
   let { data }: { data: Education } = $props();
