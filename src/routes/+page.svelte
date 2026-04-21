@@ -4,6 +4,8 @@
   import { activeSlide } from '$lib/active-slide.svelte';
   import Sidebar from '$lib/components/Sidebar.svelte';
   import SlideContainer from '$lib/components/SlideContainer.svelte';
+  import { resume } from '$lib/data/resume';
+  import { experienceState } from '$lib/experience-state.svelte';
   import { slides } from '$lib/slides';
   import { isViewportBlocked, viewportBlock } from '$lib/viewport-block.svelte';
 
@@ -24,7 +26,7 @@
   let animate = $state(false);
   let viewportReady = $state(false);
 
-  const currentSlideConfig = $derived(slides.find((s) => s.id === currentSlide)!);
+  const currentSlideConfig = $derived(slides.find((s) => s.id === currentSlide) ?? slides[0]);
 
   function syncViewportBlock() {
     if (!browser) return;
@@ -50,17 +52,42 @@
       return;
     }
 
+    // Ignore if user is typing in an input/textarea
+    const tag = (e.target as HTMLElement)?.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
     const currentIndex = slides.findIndex((s) => s.id === currentSlide);
 
+    // Navigation keys (all slides)
     if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
       if (currentIndex < slides.length - 1) {
         e.preventDefault();
         navigate(slides[currentIndex + 1].id);
       }
-    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+      return;
+    }
+    if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
       if (currentIndex > 0) {
         e.preventDefault();
         navigate(slides[currentIndex - 1].id);
+      }
+      return;
+    }
+
+    // Experience slide shortcuts
+    if (currentSlide === 'experience') {
+      const experienceCount = resume.experience.length;
+
+      if (e.key === 'a' || e.key === 'A') {
+        e.preventDefault();
+        experienceState.toggleAll(experienceCount);
+        return;
+      }
+
+      const num = parseInt(e.key);
+      if (num >= 1 && num <= experienceCount) {
+        e.preventDefault();
+        experienceState.toggle(num - 1);
       }
     }
   }

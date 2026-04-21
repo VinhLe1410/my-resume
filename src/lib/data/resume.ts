@@ -2,7 +2,6 @@
 
 export interface About {
   name: string;
-  tagline: string;
   summary: string;
   location: string;
   github: string;
@@ -50,7 +49,6 @@ export interface Resume {
 export const resume: Resume = {
   about: {
     name: 'Vinh Le',
-    tagline: 'Full Stack Developer',
     summary:
       'Computer Science graduate with a background in Data Science and hands-on experience in full-stack software development and cloud-based systems. Experienced in building and deploying web applications, automation workflows, and AWS infrastructure using modern frameworks and CI/CD practices. Strong interest in developing scalable, user-focused solutions.',
     location: 'VIC, Australia',

@@ -1,41 +1,49 @@
+import About from '$lib/components/slides/About.svelte';
+import Education from '$lib/components/slides/Education.svelte';
+import Experience from '$lib/components/slides/Experience.svelte';
+import Skills from '$lib/components/slides/Skills.svelte';
+import {
+  resume,
+  type About as AboutData,
+  type Education as EducationData,
+  type ExperienceEntry,
+  type SkillCategory,
+} from '$lib/data/resume';
 import type { Component } from 'svelte';
-import About from './components/slides/About.svelte';
-import Education from './components/slides/Education.svelte';
-import Experience from './components/slides/Experience.svelte';
-import Skills from './components/slides/Skills.svelte';
-import { resume } from './data/resume';
+
+export type SlideData = AboutData | ExperienceEntry[] | SkillCategory[] | EducationData;
+export type SlideId = 'about' | 'experience' | 'skills' | 'education';
 
 export interface SlideConfig {
-  id: string;
+  id: SlideId;
   label: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- heterogeneous component union
-  component: Component<any>;
-  props: Record<string, unknown>;
+  component: Component<{ data: SlideData }>;
+  props: { data: SlideData };
 }
 
 export const slides: SlideConfig[] = [
   {
     id: 'about',
     label: 'ABOUT',
-    component: About,
+    component: About as Component<{ data: SlideData }>,
     props: { data: resume.about },
   },
   {
     id: 'experience',
     label: 'EXPERIENCE',
-    component: Experience,
+    component: Experience as Component<{ data: SlideData }>,
     props: { data: resume.experience },
   },
   {
     id: 'skills',
     label: 'SKILLS',
-    component: Skills,
+    component: Skills as Component<{ data: SlideData }>,
     props: { data: resume.skills },
   },
   {
     id: 'education',
     label: 'EDUCATION',
-    component: Education,
+    component: Education as Component<{ data: SlideData }>,
     props: { data: resume.education },
   },
 ];
