@@ -3,3 +3,4 @@ build/
 .svelte-kit/
 node_modules/
 references/
+!.agents/skills/*/references/
