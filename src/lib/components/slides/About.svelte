@@ -12,19 +12,17 @@
 </script>
 
 <section id="about" class="intro" aria-label="About">
-  <div class="intro-grid">
-    <div class="identity">
-      <p class="identity-label">Resume / VIC, Australia</p>
-      <h1>{data.name}</h1>
-      <p class="role">Full-stack developer</p>
-    </div>
-    <div class="intro-copy">
-      <p class="lead">Building web applications, automation workflows, and cloud infrastructure.</p>
-      <p class="summary">{data.summary}</p>
-      <a class="work-link" href="#experience" onclick={(event) => onNavigate(event, 'experience')}
-        >Explore my experience <span aria-hidden="true">↘</span></a
-      >
-    </div>
+  <div class="identity">
+    <p class="identity-label">Resume / VIC, Australia</p>
+    <h1>{data.name}</h1>
+    <p class="role">Full-stack developer</p>
+  </div>
+  <div class="intro-copy">
+    <p class="lead">Building web applications, automation workflows, and cloud infrastructure.</p>
+    <p class="summary">{data.summary}</p>
+    <a class="work-link" href="#experience" onclick={(event) => onNavigate(event, 'experience')}
+      >Explore my experience <span aria-hidden="true">↘</span></a
+    >
   </div>
 
   <div class="contact-row">
@@ -45,15 +43,18 @@
 
 <style>
   .intro {
-    padding-top: clamp(4rem, 8vh, 7rem);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.75fr);
+    grid-template-rows: auto 1fr;
+    column-gap: clamp(3rem, 8vw, 8rem);
+    min-height: 100%;
+    padding-block: clamp(2.5rem, 4vw, 5rem);
     scroll-margin-top: 4.75rem;
   }
 
-  .intro-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.75fr);
-    gap: clamp(3rem, 8vw, 8rem);
-    align-items: end;
+  .intro-copy {
+    grid-column: 2;
+    grid-row: 1 / 3;
   }
 
   .identity-label,
@@ -116,11 +117,14 @@
   }
 
   .contact-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.5rem 3rem;
-    margin-top: clamp(3.5rem, 7vh, 6rem);
-    padding-block: 1.5rem;
+    grid-column: 1;
+    grid-row: 2;
+    align-self: end;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
     border-top: 1px solid var(--color-outline-subtle);
   }
 
@@ -139,31 +143,24 @@
   }
 
   @media (max-width: 900px) {
-    .intro-grid {
-      grid-template-columns: 1fr;
-      gap: 3.5rem;
+    .intro {
+      display: block;
+      min-height: 0;
+    }
+
+    .intro-copy {
+      margin-top: 3rem;
     }
   }
 
   @media (max-width: 760px) {
     .intro {
-      padding-top: 3rem;
+      padding-top: 2.5rem;
       scroll-margin-top: 6.5rem;
     }
 
     h1 {
       font-size: clamp(4.2rem, 17vw, 7rem);
-    }
-
-    .intro-grid {
-      gap: 3rem;
-    }
-
-    .contact-row {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 1.5rem;
-      margin-top: 3rem;
     }
   }
 

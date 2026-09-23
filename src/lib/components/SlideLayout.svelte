@@ -16,8 +16,8 @@
 
 <style>
   section {
-    padding-block: clamp(4.5rem, 8vw, 8.5rem);
-    border-top: 1px solid var(--color-outline-subtle);
+    padding-top: clamp(2.5rem, 4vw, 5rem);
+    padding-bottom: clamp(4.5rem, 8vw, 8.5rem);
     scroll-margin-top: 4.75rem;
   }
 

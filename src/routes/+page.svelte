@@ -168,8 +168,8 @@
   }
 
   .reading-pane:focus-visible {
-    outline: 2px solid var(--color-primary);
-    outline-offset: -2px;
+    outline: 1px solid var(--color-muted);
+    outline-offset: -1px;
   }
 
   .controls {
