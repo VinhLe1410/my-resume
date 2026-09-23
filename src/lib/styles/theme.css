@@ -26,48 +26,29 @@
   --color-outline-subtle: #474747;
 }
 
-/* Register sidebar properties so browsers can interpolate them */
-@property --sidebar-w {
-  syntax: '<length>';
-  inherits: true;
-  initial-value: 15rem;
-}
-
-@property --sidebar-px {
-  syntax: '<length>';
-  inherits: true;
-  initial-value: 2rem;
-}
-
-@property --sidebar-highlight-inset {
-  syntax: '<length>';
-  inherits: true;
-  initial-value: -0.5rem;
-}
-
-/* Sidebar responsive sizing */
-:root {
-  --sidebar-w: 15rem;
-  --sidebar-px: 2rem;
-  --sidebar-highlight-inset: clamp(-0.5rem, calc(-1vw + 6px), -0.25rem);
-}
-
-@media (max-width: 1080px) {
-  :root {
-    --sidebar-w: 11rem;
-    --sidebar-px: 1.25rem;
-  }
-}
-
-/* Base styles */
 html,
 body {
   background-color: var(--color-base);
   color: var(--color-secondary);
-  font-family: var(--font-mono);
+  font-family: var(--font-headline);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
 }
 
 ::selection {
   background: var(--color-primary);
   color: var(--color-base);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }

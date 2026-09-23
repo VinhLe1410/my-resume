@@ -1,39 +1,44 @@
 <script lang="ts">
-  import type { SlideConfig } from '$lib/slides';
-  import { fly } from 'svelte/transition';
-  import { cubicOut, cubicIn } from 'svelte/easing';
-
-  let { slide, direction, animate }: { slide: SlideConfig; direction: number; animate: boolean } = $props();
-
-  const Component = $derived(slide.component);
+  import About from '$lib/components/slides/About.svelte';
+  import Education from '$lib/components/slides/Education.svelte';
+  import Experience from '$lib/components/slides/Experience.svelte';
+  import Skills from '$lib/components/slides/Skills.svelte';
+  import { resume } from '$lib/data/resume';
 </script>
 
-<main class="ml-(--sidebar-w) flex-1 h-screen bg-surface slide-stack overflow-hidden">
-  {#if animate}
-    {#key slide.id}
-      <div
-        class="h-screen"
-        in:fly={{ y: direction * 40, duration: 150, easing: cubicOut }}
-        out:fly={{ y: direction * -40, duration: 100, easing: cubicIn }}
-      >
-        <Component {...slide.props} />
-      </div>
-    {/key}
-  {:else}
-    <div class="h-screen">
-      <Component {...slide.props} />
-    </div>
-  {/if}
+<main>
+  <About data={resume.about} />
+  <Experience data={resume.experience} />
+  <Skills data={resume.skills} />
+  <Education data={resume.education} />
 </main>
 
+<footer class="site-footer">
+  <span>{resume.about.name} / Resume</span>
+  <a href="#about">Back to top ↑</a>
+</footer>
+
 <style>
-  .slide-stack {
-    display: grid;
-    grid-template: 1fr / 1fr;
-    transition: margin-left 300ms ease;
+  main,
+  .site-footer {
+    max-width: 90rem;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 4.5vw, 5rem);
   }
-  .slide-stack > :global(*) {
-    grid-row: 1;
-    grid-column: 1;
+
+  .site-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    padding-block: 2rem;
+    border-top: 1px solid var(--color-outline-subtle);
+    color: var(--color-muted);
+    font: 400 0.7rem var(--font-mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .site-footer a {
+    color: var(--color-primary);
   }
 </style>

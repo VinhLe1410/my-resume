@@ -5,39 +5,80 @@
   let { data }: { data: Education } = $props();
 </script>
 
-<SlideLayout title="EDUCATION" vertical>
+<SlideLayout title="Education">
   {#snippet body()}
-    <div class="max-w-2xl space-y-10">
-      <!-- Degree info -->
-      <div>
-        <h3 class="text-lg font-bold text-primary tracking-tight mb-1">
-          {data.degree}
-        </h3>
-        <div class="flex items-baseline justify-between mb-3">
-          <span class="text-xs text-muted tracking-[0.15em] uppercase">
-            {data.institution} // {data.mode}
-          </span>
-          <span class="text-xs text-muted tabular-nums shrink-0 whitespace-nowrap">
-            {data.period}
-          </span>
-        </div>
-        <p class="text-sm text-secondary leading-relaxed">
-          {data.description}
-        </p>
+    <div class="education-grid">
+      <div class="degree">
+        <p class="period">{data.period} / {data.mode}</p>
+        <h3>{data.degree}</h3>
+        <p class="institution">{data.institution}</p>
+        <p class="description">{data.description}</p>
       </div>
-
-      <!-- Achievements -->
-      <div>
-        <h4 class="text-xs text-muted tracking-[0.15em] uppercase mb-5">Notable Grades</h4>
-        <ul class="space-y-3 border-l border-outline-subtle/30 pl-6">
-          {#each data.achievements as achievement, i (i)}
-            <li class="flex gap-3 text-sm text-secondary/80 leading-relaxed">
-              <span class="text-ghost shrink-0">_</span>
-              <span>{achievement}</span>
-            </li>
+      <div class="achievements">
+        <h4>Notable grades</h4>
+        <ul>
+          {#each data.achievements as achievement (achievement)}
+            <li>{achievement}</li>
           {/each}
         </ul>
       </div>
     </div>
   {/snippet}
 </SlideLayout>
+
+<style>
+  .education-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(3rem, 8vw, 8rem);
+  }
+
+  .period,
+  .institution,
+  h4 {
+    color: var(--color-muted);
+    font: 400 0.75rem/1.5 var(--font-mono);
+    letter-spacing: 0.07em;
+  }
+
+  h3 {
+    margin-top: 1.25rem;
+    color: var(--color-primary);
+    font: 700 clamp(1.7rem, 3vw, 2.75rem)/1.15 var(--font-headline);
+    letter-spacing: -0.04em;
+  }
+
+  .institution {
+    margin-top: 0.8rem;
+  }
+
+  .description {
+    margin-top: 2rem;
+    color: var(--color-secondary);
+    font: 400 1rem/1.65 var(--font-headline);
+  }
+
+  h4 {
+    margin-bottom: 1.25rem;
+    color: var(--color-primary);
+    text-transform: uppercase;
+  }
+
+  ul {
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    padding: 0.75rem 0;
+    border-top: 1px solid var(--color-outline-subtle);
+    color: var(--color-secondary);
+    font: 400 0.95rem/1.5 var(--font-headline);
+  }
+
+  @media (max-width: 760px) {
+    .education-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,77 +1,115 @@
 <script lang="ts">
-  import type { SlideConfig } from '$lib/slides';
   import { resume } from '$lib/data/resume';
-
-  let {
-    slides,
-    currentSlide,
-    onNavigate,
-  }: {
-    slides: SlideConfig[];
-    currentSlide: string;
-    onNavigate: (id: string) => void;
-  } = $props();
-
-  const ITEM_HEIGHT = 30;
-  const ITEM_GAP = 2;
-
-  const activeIndex = $derived(slides.findIndex((s) => s.id === currentSlide));
-  const highlightY = $derived(activeIndex * (ITEM_HEIGHT + ITEM_GAP));
 </script>
 
-<nav
-  class="fixed left-0 top-0 h-full w-(--sidebar-w) bg-surface-dim flex flex-col py-12 px-(--sidebar-px) items-center justify-between z-50"
->
-  <div class="space-y-12 text-center">
-    <!-- Name -->
-    <div>
-      <h1 class="text-3xl font-bold tracking-tighter text-primary font-headline uppercase leading-none">
-        {resume.about.name}
-      </h1>
-      <span class="text-[11px] text-ghost mt-2 block tracking-widest"> RESUME // 04042026 </span>
-    </div>
-
-    <!-- Navigation -->
-    <div class="relative">
-      <!-- Sliding highlight box -->
-      <div
-        class="highlight absolute border border-primary pointer-events-none"
-        style="left: var(--sidebar-highlight-inset); right: var(--sidebar-highlight-inset); height: {ITEM_HEIGHT}px; transform: translateY({highlightY}px);"
-      ></div>
-
-      <ul class="flex flex-col" style="gap: {ITEM_GAP}px;">
-        {#each slides as slide (slide.id)}
-          <li>
-            <button
-              aria-current={slide.id === currentSlide ? 'page' : undefined}
-              class="text-xs tracking-[0.15em] transition-colors duration-150 w-full flex items-center justify-center
-                {slide.id === currentSlide ? 'text-primary font-bold' : 'text-muted hover:text-secondary'}"
-              style="height: {ITEM_HEIGHT}px;"
-              onclick={() => onNavigate(slide.id)}
-            >
-              {slide.label}
-            </button>
-          </li>
-        {/each}
-      </ul>
-    </div>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="#about" aria-label="Vinh Le, back to top">{resume.about.name}</a>
+    <nav aria-label="Resume sections">
+      <a href="#about">About</a>
+      <a href="#experience">Experience</a>
+      <a href="#skills">Skills</a>
+      <a href="#education">Education</a>
+    </nav>
+    <a class="header-contact" href="mailto:lpvinh2k4@gmail.com">Get in touch <span aria-hidden="true">↗</span></a>
   </div>
-
-  <!-- Keyboard hint -->
-  <div class="flex items-center gap-2">
-    <kbd class="text-[11px] text-muted border border-outline-subtle/50 px-1.5 py-0.5 font-mono">↑</kbd>
-    <kbd class="text-[11px] text-muted border border-outline-subtle/50 px-1.5 py-0.5 font-mono">↓</kbd>
-    <span class="text-[11px] text-ghost tracking-[0.15em] uppercase">Navigate</span>
-  </div>
-</nav>
+</header>
 
 <style>
-  nav {
-    transition:
-      width 300ms ease,
-      padding 300ms ease;
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgb(8 8 8 / 0.94);
+    border-bottom: 1px solid var(--color-outline-subtle);
+    backdrop-filter: blur(16px);
   }
-  .highlight {
-    transition: transform 200ms ease-out;
+
+  .header-inner {
+    max-width: 90rem;
+    min-height: 4.75rem;
+    margin: auto;
+    padding: 0 clamp(1.25rem, 4.5vw, 5rem);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+
+  .brand {
+    color: var(--color-primary);
+    font: 700 1.4rem/1 var(--font-headline);
+    letter-spacing: -0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  nav {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 2.5vw, 2.75rem);
+  }
+
+  nav a,
+  .header-contact {
+    color: var(--color-secondary);
+    font: 400 0.7rem/1.3 var(--font-mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: color 180ms ease;
+  }
+
+  nav a:hover,
+  .header-contact:hover {
+    color: var(--color-primary);
+  }
+
+  .header-contact {
+    color: var(--color-primary);
+    border-bottom: 1px solid var(--color-primary);
+    padding-bottom: 0.35rem;
+  }
+
+  .header-contact span {
+    margin-left: 0.3rem;
+  }
+
+  @media (max-width: 760px) {
+    .header-inner {
+      min-height: 0;
+      padding-top: 1rem;
+      padding-bottom: 0;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+    }
+
+    .brand {
+      font-size: 1.2rem;
+    }
+
+    .header-contact {
+      order: 1;
+      margin-left: auto;
+    }
+
+    nav {
+      order: 2;
+      width: 100%;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding: 0.25rem 0 0.85rem;
+    }
+
+    nav a {
+      font-size: 0.63rem;
+      letter-spacing: 0.04em;
+    }
+  }
+
+  @media (max-width: 360px) {
+    nav a {
+      font-size: 0.58rem;
+    }
   }
 </style>

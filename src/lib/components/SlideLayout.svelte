@@ -1,37 +1,53 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
 
-  let { title, body, vertical = false }: { title: string; body: Snippet; vertical?: boolean } = $props();
+  let { title, body }: { title: string; body: Snippet } = $props();
 </script>
 
-<div class="h-screen flex">
-  {#if vertical}
-    <!-- Vertical rotated title — narrow pillar -->
-    <div class="w-16 shrink-0 flex justify-center items-start pt-24 pl-12">
-      <h2
-        class="font-headline text-5xl font-bold text-primary/50 tracking-tighter uppercase leading-none select-none vertical-title"
-      >
-        {title}
-      </h2>
-    </div>
-  {:else}
-    <!-- Standard horizontal title — left column -->
-    <div class="w-72 shrink-0 flex items-start pt-24 pl-16 pr-8">
-      <h2 class="font-headline text-3xl font-bold text-primary tracking-tighter uppercase leading-none">
-        {title}
-      </h2>
-    </div>
-  {/if}
-
-  <!-- Body — right column -->
-  <div class="flex-1 py-24 pr-24 overflow-y-auto {vertical ? 'pl-12' : ''}">
+<section id={title.toLowerCase()} aria-label={title}>
+  <div class="section-heading">
+    <h2>{title}</h2>
+    <span class="rule" aria-hidden="true"></span>
+  </div>
+  <div class="section-body">
     {@render body()}
   </div>
-</div>
+</section>
 
 <style>
-  .vertical-title {
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
+  section {
+    padding-block: clamp(4.5rem, 8vw, 8.5rem);
+    border-top: 1px solid var(--color-outline-subtle);
+    scroll-margin-top: 4.75rem;
+  }
+
+  .section-heading {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
+  }
+
+  h2 {
+    flex: none;
+    color: var(--color-primary);
+    font: 700 clamp(2.5rem, 5vw, 5rem)/1 var(--font-headline);
+    letter-spacing: -0.055em;
+  }
+
+  .rule {
+    flex: 1;
+    height: 1px;
+    background: var(--color-outline-subtle);
+  }
+
+  @media (max-width: 760px) {
+    section {
+      scroll-margin-top: 6.5rem;
+    }
+
+    .section-heading {
+      gap: 1.25rem;
+    }
   }
 </style>
