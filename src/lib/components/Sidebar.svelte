@@ -1,15 +1,29 @@
 <script lang="ts">
   import { resume } from '$lib/data/resume';
+  import { slides, type SlideId } from '$lib/slides';
+
+  let {
+    active,
+    onNavigate,
+  }: {
+    active: SlideId;
+    onNavigate: (event: MouseEvent, id: SlideId) => void;
+  } = $props();
 </script>
 
 <header class="site-header">
   <div class="header-inner">
-    <a class="brand" href="#about" aria-label="Vinh Le, back to top">{resume.about.name}</a>
+    <a class="brand" href="#about" aria-label="Vinh Le, About section" onclick={(event) => onNavigate(event, 'about')}
+      >{resume.about.name}</a
+    >
     <nav aria-label="Resume sections">
-      <a href="#about">About</a>
-      <a href="#experience">Experience</a>
-      <a href="#skills">Skills</a>
-      <a href="#education">Education</a>
+      {#each slides as slide (slide.id)}
+        <a
+          href="#{slide.id}"
+          aria-current={slide.id === active ? 'page' : undefined}
+          onclick={(event) => onNavigate(event, slide.id)}>{slide.label}</a
+        >
+      {/each}
     </nav>
     <a class="header-contact" href="mailto:lpvinh2k4@gmail.com">Get in touch <span aria-hidden="true">↗</span></a>
   </div>
@@ -60,6 +74,25 @@
     transition: color 180ms ease;
   }
 
+  nav a {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 4.75rem;
+  }
+
+  nav a[aria-current='page'] {
+    color: var(--color-primary);
+  }
+
+  nav a[aria-current='page']::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: 1px;
+    background: var(--color-primary);
+  }
+
   nav a:hover,
   .header-contact:hover {
     color: var(--color-primary);
@@ -98,10 +131,11 @@
       width: 100%;
       justify-content: space-between;
       gap: 0.5rem;
-      padding: 0.25rem 0 0.85rem;
+      padding-top: 0.25rem;
     }
 
     nav a {
+      min-height: 2.75rem;
       font-size: 0.63rem;
       letter-spacing: 0.04em;
     }
@@ -110,6 +144,13 @@
   @media (max-width: 360px) {
     nav a {
       font-size: 0.58rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    nav a,
+    .header-contact {
+      transition: none;
     }
   }
 </style>

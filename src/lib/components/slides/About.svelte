@@ -1,7 +1,14 @@
 <script lang="ts">
   import type { About } from '$lib/data/resume';
+  import type { SlideId } from '$lib/slides';
 
-  let { data }: { data: About } = $props();
+  let {
+    data,
+    onNavigate,
+  }: {
+    data: About;
+    onNavigate: (event: MouseEvent, id: SlideId) => void;
+  } = $props();
 </script>
 
 <section id="about" class="intro" aria-label="About">
@@ -14,7 +21,9 @@
     <div class="intro-copy">
       <p class="lead">Building web applications, automation workflows, and cloud infrastructure.</p>
       <p class="summary">{data.summary}</p>
-      <a class="work-link" href="#experience">Explore my experience <span aria-hidden="true">↘</span></a>
+      <a class="work-link" href="#experience" onclick={(event) => onNavigate(event, 'experience')}
+        >Explore my experience <span aria-hidden="true">↘</span></a
+      >
     </div>
   </div>
 
