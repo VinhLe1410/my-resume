@@ -4,9 +4,9 @@
   let { title, body }: { title: string; body: Snippet } = $props();
 </script>
 
-<section id={title.toLowerCase()} aria-label={title}>
+<section aria-label={title}>
   <div class="section-heading">
-    <h2>{title}</h2>
+    <h2 tabindex="-1">{title}</h2>
     <span class="rule" aria-hidden="true"></span>
   </div>
   <div class="section-body">
@@ -18,7 +18,6 @@
   section {
     padding-top: clamp(2.5rem, 4vw, 5rem);
     padding-bottom: clamp(4.5rem, 8vw, 8.5rem);
-    scroll-margin-top: 4.75rem;
   }
 
   .section-heading {
@@ -42,10 +41,6 @@
   }
 
   @media (max-width: 760px) {
-    section {
-      scroll-margin-top: 6.5rem;
-    }
-
     .section-heading {
       gap: 1.25rem;
     }

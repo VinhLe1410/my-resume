@@ -2,27 +2,15 @@
   import { resume } from '$lib/data/resume';
   import { slides, type SlideId } from '$lib/slides';
 
-  let {
-    active,
-    onNavigate,
-  }: {
-    active: SlideId;
-    onNavigate: (event: MouseEvent, id: SlideId) => void;
-  } = $props();
+  let { active }: { active: SlideId } = $props();
 </script>
 
 <header class="site-header">
   <div class="header-inner">
-    <a class="brand" href="#about" aria-label="Vinh Le, About section" onclick={(event) => onNavigate(event, 'about')}
-      >{resume.about.name}</a
-    >
+    <a class="brand" href="#about" aria-label="Vinh Le, About section">{resume.about.name}</a>
     <nav aria-label="Resume sections">
       {#each slides as slide (slide.id)}
-        <a
-          href="#{slide.id}"
-          aria-current={slide.id === active ? 'page' : undefined}
-          onclick={(event) => onNavigate(event, slide.id)}>{slide.label}</a
-        >
+        <a href="#{slide.id}" aria-current={slide.id === active ? 'page' : undefined}>{slide.label}</a>
       {/each}
     </nav>
     <a class="header-contact" href="mailto:lpvinh2k4@gmail.com">Get in touch <span aria-hidden="true">↗</span></a>

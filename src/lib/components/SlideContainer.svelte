@@ -4,28 +4,20 @@
   import Experience from '$lib/components/slides/Experience.svelte';
   import Skills from '$lib/components/slides/Skills.svelte';
   import { resume } from '$lib/data/resume';
-  import type { SlideId } from '$lib/slides';
-
-  let {
-    active,
-    onNavigate,
-  }: {
-    active: SlideId;
-    onNavigate: (event: MouseEvent, id: SlideId) => void;
-  } = $props();
 </script>
 
-<div hidden={active !== 'about'} class="chapter about-chapter"><About data={resume.about} {onNavigate} /></div>
-<div hidden={active !== 'experience'} class="chapter"><Experience data={resume.experience} /></div>
-<div hidden={active !== 'skills'} class="chapter"><Skills data={resume.skills} /></div>
-<div hidden={active !== 'education'} class="chapter"><Education data={resume.education} /></div>
+<div id="about" class="chapter about-chapter"><About data={resume.about} /></div>
+<div id="experience" class="chapter"><Experience data={resume.experience} /></div>
+<div id="skills" class="chapter"><Skills data={resume.skills} /></div>
+<div id="education" class="chapter"><Education data={resume.education} /></div>
 
 <style>
-  .about-chapter {
-    height: 100%;
+  .chapter {
+    min-height: calc(100dvh - var(--resume-header-height) - 4.75rem);
+    scroll-snap-align: start;
   }
 
-  .chapter[hidden] {
-    display: none;
+  .about-chapter {
+    display: grid;
   }
 </style>

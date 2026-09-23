@@ -1,58 +1,28 @@
 <script lang="ts">
-  import { onMount, tick } from 'svelte';
+  import { replaceState } from '$app/navigation';
+  import { onMount } from 'svelte';
   import Sidebar from '$lib/components/Sidebar.svelte';
   import SlideContainer from '$lib/components/SlideContainer.svelte';
   import { slides, type SlideId } from '$lib/slides';
 
   let active: SlideId = $state('about');
-  let readingPane: HTMLElement;
-  let navigation = 0;
-  const positions: Partial<Record<SlideId, number>> = {};
-
   const activeIndex = $derived(slides.findIndex((slide) => slide.id === active));
   const previous = $derived(slides[activeIndex - 1]);
   const next = $derived(slides[activeIndex + 1]);
 
-  function usesDocumentScroll() {
-    return window.matchMedia('(max-width: 760px), (max-height: 700px)').matches;
-  }
-
-  async function activate(id: SlideId, focus = true) {
-    if (id !== active) {
-      positions[active] = usesDocumentScroll() ? window.scrollY : readingPane.scrollTop;
-      active = id;
-      const currentNavigation = ++navigation;
-      await tick();
-      if (currentNavigation !== navigation) return;
-      const position = positions[id] ?? 0;
-      if (usesDocumentScroll()) window.scrollTo(0, position);
-      else readingPane.scrollTop = position;
-    } else if (focus) {
-      if (usesDocumentScroll()) window.scrollTo(0, 0);
-      else readingPane.scrollTop = 0;
+  function syncActive() {
+    const midpoint = window.innerHeight / 2;
+    const slide = slides.find(({ id }) => {
+      const rect = document.getElementById(id)?.getBoundingClientRect();
+      return rect && rect.top <= midpoint && rect.bottom > midpoint;
+    });
+    if (!slide || slide.id === active) return;
+    active = slide.id;
+    if (location.hash !== `#${slide.id}`) {
+      // A fragment keeps the current pathname and query string.
+      // eslint-disable-next-line svelte/no-navigation-without-resolve
+      replaceState(`#${slide.id}`, {});
     }
-
-    if (focus) readingPane.focus({ preventScroll: true });
-  }
-
-  function navigate(event: MouseEvent, id: SlideId) {
-    if (
-      event.button !== 0 ||
-      event.metaKey ||
-      event.ctrlKey ||
-      event.altKey ||
-      event.shiftKey ||
-      event.defaultPrevented
-    )
-      return;
-    event.preventDefault();
-    if (location.hash !== `#${id}`) history.pushState(null, '', `#${id}`);
-    void activate(id);
-  }
-
-  function syncWithUrl() {
-    const id = slides.find((slide) => `#${slide.id}` === location.hash)?.id ?? (!location.hash ? 'about' : undefined);
-    if (id && id !== active) void activate(id);
   }
 
   function handleKeydown(event: KeyboardEvent) {
@@ -60,64 +30,32 @@
       return;
     if (window.getSelection()?.toString()) return;
     if (!(event.target instanceof HTMLElement)) return;
-    if (event.target.closest('button, summary, input, textarea, select, [contenteditable], [role="textbox"]')) return;
-
-    if (!usesDocumentScroll() && !readingPane.contains(event.target)) {
-      let distance = 0;
-      switch (event.key) {
-        case 'ArrowDown':
-          distance = 40;
-          break;
-        case 'ArrowUp':
-          distance = -40;
-          break;
-        case 'PageDown':
-        case ' ':
-          distance = readingPane.clientHeight * 0.9;
-          break;
-        case 'PageUp':
-          distance = -readingPane.clientHeight * 0.9;
-          break;
-      }
-      if (distance) {
-        event.preventDefault();
-        readingPane.scrollBy(0, distance);
-        return;
-      }
-    }
-
     if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
-    if (event.repeat || event.target.closest('a')) return;
+    if (
+      event.repeat ||
+      event.target.closest('a, button, summary, input, textarea, select, [contenteditable], [role="textbox"]')
+    )
+      return;
 
     const id = slides[activeIndex + (event.key === 'ArrowRight' ? 1 : -1)]?.id;
     if (!id) return;
     event.preventDefault();
-    history.pushState(null, '', `#${id}`);
-    void activate(id);
+    location.hash = id;
+    document.getElementById(id)?.querySelector<HTMLElement>('h1, h2')?.focus({ preventScroll: true });
   }
 
-  onMount(() => {
-    const restoration = history.scrollRestoration;
-    history.scrollRestoration = 'manual';
-    const id = slides.find((slide) => `#${slide.id}` === location.hash)?.id;
-    if (id) void activate(id, false);
-    return () => {
-      history.scrollRestoration = restoration;
-    };
-  });
+  onMount(syncActive);
 </script>
 
-<svelte:window onkeydown={handleKeydown} onpopstate={syncWithUrl} onhashchange={syncWithUrl} />
+<svelte:window onkeydown={handleKeydown} onscroll={syncActive} onresize={syncActive} onhashchange={syncActive} />
 
 <div class="resume-shell">
-  <Sidebar {active} onNavigate={navigate} />
-  <main class="reading-pane" bind:this={readingPane} tabindex="-1" aria-label="{slides[activeIndex].label} section">
-    <SlideContainer {active} onNavigate={navigate} />
-  </main>
+  <Sidebar {active} />
+  <main class="reading-pane" aria-label="Resume sections"><SlideContainer /></main>
   <footer class="controls" aria-label="Section navigation">
     <div class="controls-inner">
       {#if previous}
-        <a class="control previous" href="#{previous.id}" onclick={(event) => navigate(event, previous.id)}>
+        <a class="control previous" href="#{previous.id}">
           <span class="control-caption">Previous</span>
           <span class="control-name">← {previous.label}</span>
         </a>
@@ -133,7 +71,7 @@
         >
       </div>
       {#if next}
-        <a class="control next" href="#{next.id}" onclick={(event) => navigate(event, next.id)}>
+        <a class="control next" href="#{next.id}">
           <span class="control-caption">Next</span>
           <span class="control-name">{next.label} →</span>
         </a>
@@ -145,31 +83,23 @@
 </div>
 
 <style>
+  :global(html) {
+    --resume-header-height: 4.75rem;
+    scroll-snap-type: y mandatory;
+    scroll-padding-top: var(--resume-header-height);
+    scroll-padding-bottom: 4.75rem;
+  }
+
   .resume-shell {
-    display: flex;
-    flex-direction: column;
-    height: 100dvh;
+    min-height: 100dvh;
     padding-bottom: 4.75rem;
   }
 
   .reading-pane {
     width: 100%;
     max-width: 90rem;
-    flex: 1;
-    min-height: 0;
     margin-inline: auto;
     padding-inline: clamp(1.25rem, 4.5vw, 5rem);
-    overflow-y: auto;
-    overscroll-behavior: contain;
-  }
-
-  .reading-pane:focus {
-    outline: none;
-  }
-
-  .reading-pane:focus-visible {
-    outline: 1px solid var(--color-muted);
-    outline-offset: -1px;
   }
 
   .controls {
@@ -240,19 +170,21 @@
     text-transform: none;
   }
 
+  @media (max-width: 760px) {
+    :global(html) {
+      --resume-header-height: 6.25rem;
+    }
+  }
+
   @media (max-width: 760px), (max-height: 700px) {
-    .resume-shell {
-      height: auto;
-      min-height: 100dvh;
-    }
-
-    .reading-pane {
-      flex: 1 0 auto;
-      overflow: visible;
-    }
-
     .keyboard-hint {
       display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(html) {
+      scroll-snap-type: none;
     }
   }
 

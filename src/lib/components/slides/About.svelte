@@ -1,28 +1,19 @@
 <script lang="ts">
   import type { About } from '$lib/data/resume';
-  import type { SlideId } from '$lib/slides';
 
-  let {
-    data,
-    onNavigate,
-  }: {
-    data: About;
-    onNavigate: (event: MouseEvent, id: SlideId) => void;
-  } = $props();
+  let { data }: { data: About } = $props();
 </script>
 
-<section id="about" class="intro" aria-label="About">
+<section class="intro" aria-label="About">
   <div class="identity">
     <p class="identity-label">Resume / VIC, Australia</p>
-    <h1>{data.name}</h1>
+    <h1 tabindex="-1">{data.name}</h1>
     <p class="role">Full-stack developer</p>
   </div>
   <div class="intro-copy">
     <p class="lead">Building web applications, automation workflows, and cloud infrastructure.</p>
     <p class="summary">{data.summary}</p>
-    <a class="work-link" href="#experience" onclick={(event) => onNavigate(event, 'experience')}
-      >Explore my experience <span aria-hidden="true">↘</span></a
-    >
+    <a class="work-link" href="#experience">Explore my experience <span aria-hidden="true">↘</span></a>
   </div>
 
   <div class="contact-row">
@@ -49,7 +40,6 @@
     column-gap: clamp(3rem, 8vw, 8rem);
     min-height: 100%;
     padding-block: clamp(2.5rem, 4vw, 5rem);
-    scroll-margin-top: 4.75rem;
   }
 
   .intro-copy {
@@ -156,7 +146,6 @@
   @media (max-width: 760px) {
     .intro {
       padding-top: 2.5rem;
-      scroll-margin-top: 6.5rem;
     }
 
     h1 {
