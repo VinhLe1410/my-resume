@@ -9,9 +9,9 @@ export const anchor = {
   contribution: (role: number, line: number) => `role-${role}-contribution-${line}`,
   skillGroup: (group: number) => `skills-${group}`,
   skill: (group: number, item: number) => `skills-${group}-${item}`,
-  degree: 'degree',
-  degreeSummary: 'degree-summary',
-  grade: (line: number) => `grade-${line}`,
+  degree: (degree: number) => `degree-${degree}`,
+  degreeSummary: (degree: number) => `degree-${degree}-summary`,
+  grade: (degree: number, line: number) => `degree-${degree}-grade-${line}`,
 };
 
 export type SearchAction =
@@ -55,7 +55,7 @@ const sectionDetails: Record<SlideId, string> = {
   about: 'Summary and contact details',
   experience: `${resume.experience.length} roles`,
   skills: `${resume.skills.length} groups, ${skillCount} skills`,
-  education: resume.education.institution,
+  education: `${resume.education.length} degrees`,
 };
 
 function reveal(id: string, block: ScrollLogicalPosition): SearchAction {
@@ -144,23 +144,31 @@ export const searchEntries: SearchEntry[] = [
       ),
     ),
   ]),
-  draft(
-    'Education',
-    education.degree,
-    `${education.institution} · ${education.period}`,
-    reveal(anchor.degree, 'center'),
-    education.institution,
-  ),
-  draft(
-    'Education',
-    education.description,
-    education.institution,
-    reveal(anchor.degreeSummary, 'center'),
-    education.institution,
-  ),
-  ...education.achievements.map((text, line) =>
-    draft('Education', text, 'Notable grade', reveal(anchor.grade(line), 'center'), 'grade grades'),
-  ),
+  ...education.flatMap((entry, degree) => [
+    draft(
+      'Education',
+      entry.degree,
+      `${entry.institution} · ${entry.period}`,
+      reveal(anchor.degree(degree), 'center'),
+      [entry.institution, entry.period, entry.mode, entry.status].filter(Boolean).join(' '),
+    ),
+    draft(
+      'Education',
+      entry.description,
+      entry.institution,
+      reveal(anchor.degreeSummary(degree), 'center'),
+      `${entry.institution} ${entry.degree}`,
+    ),
+    ...entry.achievements.map((text, line) =>
+      draft(
+        'Education',
+        text,
+        `${entry.institution} · notable grade`,
+        reveal(anchor.grade(degree, line), 'center'),
+        `grade grades ${entry.institution} ${entry.degree}`,
+      ),
+    ),
+  ]),
   ...contactRows.flatMap(contactDrafts),
 ].map((entry, index) => ({ ...entry, key: `entry-${index}` }));
 

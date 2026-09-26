@@ -40,7 +40,8 @@ export interface Education {
   institution: string;
   degree: string;
   period: string;
-  mode: string;
+  mode?: string;
+  status?: string;
   description: string;
   achievements: string[];
 }
@@ -49,7 +50,7 @@ export interface Resume {
   about: About;
   experience: ExperienceEntry[];
   skills: SkillCategory[];
-  education: Education;
+  education: Education[];
 }
 
 // ── Data ───────────────────────────────────────────────
@@ -57,11 +58,11 @@ export interface Resume {
 export const resume: Resume = {
   about: {
     name: 'Vinh Le',
-    role: 'Full-stack developer',
+    role: 'Full-stack Developer',
     location: 'VIC, Australia',
-    headline: 'I build web apps, the automation behind them, and the cloud they run on.',
+    headline: 'Anything and everything coding',
     intro:
-      'Computer Science graduate with a Data Science major. I build web apps and browser extensions with TypeScript and React, and work on the AWS workflows they use. I turn client feedback into technical plans and review changes made with coding agents.',
+      'Computer Science graduate with a Data Science major, currently™ pursuing Master of IT in Software Development while working as a Full-stack developer at the same time. I build web apps, browser extensions, automation workflows through TypeScript, React, and setting up infrastructure on AWS that they rely on.',
     summary:
       'Full-stack developer in Victoria, Australia, working with TypeScript, React, and AWS on web apps, browser extensions, and automation.',
     contact: [
@@ -77,22 +78,20 @@ export const resume: Resume = {
       role: 'Junior Full Stack Developer',
       company: 'Evolit Pty Ltd',
       location: 'Onsite - Remote',
-      period: 'Feb 2025 — Present',
+      period: 'Feb 2025 - Present',
       summary:
-        'Build browser extensions, web apps, and backend workflows on AWS, and help shape features from client feedback.',
+        'Work with clients to turn requirements and feedback into development plans, then build web apps, browser extensions, and automation using TypeScript, React, and AWS',
       highlights: [
-        'Built multi-file document attachment in a React browser extension, with per-file status, retries, and recovery after service worker restarts.',
-        'Implemented queued file preparation with AWS Lambda, SQS, and S3, including retry and rate-limit handling.',
+        "Built a Chrome extension that compares records against the client's CRM and downloads many files at once. It queues downloads, shows per-file status, retries failures, handles rate limits, and refreshes access tokens on AWS.",
+        'Building a web portal for education providers in Vietnam to manage courses, teaching content, students, enrollments, feedback, and staff with more™ to come.',
       ],
       bullets: [
-        'Worked with a small team on a tutoring platform, building attendance and class workflows across TypeScript APIs and responsive React interfaces.',
-        'Consolidated shared React components in an Nx library and refactored extension state to separate workflow logic from the UI.',
-        'Contributed infrastructure changes in AWS CDK and Terraform, and updated GitHub Actions workflows for builds, checks, and release packaging.',
-        'Added focused Vitest tests and used Playwright to check browser behaviour during refactors and failure recovery.',
-        'Improved local development so data requests can run locally while file preparation uses cloud services.',
-        'Turned client feedback into workflow rules and scoped implementation tasks, and prepared demos, guides, and walkthroughs for review.',
-        'Split larger changes into tasks for coding agents, reviewed their output, and checked the combined behaviour.',
-        'Improved client-scoped PostgreSQL queries and reduced repeated database setup in tests.',
+        'Set up infrastructure with AWS CDK and Terraform, and GitHub Actions workflows for builds, deployments, and release packaging.',
+        'Set up and maintained Nx monorepos to share libraries between web applications and automation workflows.',
+        'Delivered automation workflows for CRMs and cloud drives, React back-office apps, a CRM widget with voice calling, and a Chrome extension.',
+        'Worked with clients to turn business requirements and product feedback into epics, milestones, and tickets in GitHub Projects or Jira.',
+        'Developed both through hand-writing code (before) and now actively with coding agents such as Claude Code, Cursor, Codex, Amp.',
+        'Maintain and refine agent workflows for the team to reduce unnecessary token use and make the tools easier to work with.',
       ],
     },
     {
@@ -215,20 +214,31 @@ export const resume: Resume = {
     },
   ],
 
-  education: {
-    institution: 'Swinburne University of Technology',
-    degree: 'Bachelor of Computer Science — Data Science',
-    period: 'Mar 2023 — Dec 2025',
-    mode: 'Full-time',
-    description:
-      'Gained deep knowledge across Computer Science while discovering a passion for building applications and software solutions that meet user needs.',
-    achievements: [
-      'HD and Distinction in Part 1 and 2 of the Final Project',
-      'HD in Computing Technology Innovation Project',
-      'HD in Computing Technology Design Project',
-      'HD in Cloud Computing Architecture',
-      'Distinction in Software Deployment and Evolution',
-      'Distinction in Computing Technology Inquiry Project',
-    ],
-  },
+  education: [
+    {
+      institution: 'Swinburne University of Technology',
+      degree: 'Master of Information Technology (Professional Computing)',
+      period: 'Mar 2026 – Present',
+      status: 'In progress',
+      description:
+        'Specialising in Software Development while working as a full-stack developer. Expected to finish in December 2027.',
+      achievements: [],
+    },
+    {
+      institution: 'Swinburne University of Technology',
+      degree: 'Bachelor of Computer Science — Data Science',
+      period: 'Mar 2023 — Dec 2025',
+      mode: 'Full-time',
+      description:
+        'Gained deep knowledge across Computer Science while discovering a passion for building applications and software solutions that meet user needs.',
+      achievements: [
+        'HD and Distinction in Part 1 and 2 of the Final Project',
+        'HD in Computing Technology Innovation Project',
+        'HD in Computing Technology Design Project',
+        'HD in Cloud Computing Architecture',
+        'Distinction in Software Deployment and Evolution',
+        'Distinction in Computing Technology Inquiry Project',
+      ],
+    },
+  ],
 };
