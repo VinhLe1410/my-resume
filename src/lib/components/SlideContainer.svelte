@@ -14,7 +14,6 @@
 <style>
   .chapter {
     min-height: calc(100dvh - var(--resume-header-height) - 4.75rem);
-    scroll-snap-align: start;
   }
 
   .about-chapter {

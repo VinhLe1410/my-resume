@@ -5,7 +5,7 @@
   let { data }: { data: ExperienceEntry[] } = $props();
 </script>
 
-<SlideLayout title="Experience">
+<SlideLayout id="experience" title="Experience">
   {#snippet body()}
     <div class="roles">
       {#each data as entry (entry.company)}
