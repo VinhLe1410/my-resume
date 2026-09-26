@@ -1,39 +1,24 @@
 <script lang="ts">
-  import type { SlideConfig } from '$lib/slides';
-  import { fly } from 'svelte/transition';
-  import { cubicOut, cubicIn } from 'svelte/easing';
-
-  let { slide, direction, animate }: { slide: SlideConfig; direction: number; animate: boolean } = $props();
-
-  const Component = $derived(slide.component);
+  import About from '$lib/components/slides/About.svelte';
+  import Education from '$lib/components/slides/Education.svelte';
+  import Experience from '$lib/components/slides/Experience.svelte';
+  import Skills from '$lib/components/slides/Skills.svelte';
+  import { resume } from '$lib/data/resume';
 </script>
 
-<main class="ml-(--sidebar-w) flex-1 h-screen bg-surface slide-stack overflow-hidden">
-  {#if animate}
-    {#key slide.id}
-      <div
-        class="h-screen"
-        in:fly={{ y: direction * 40, duration: 150, easing: cubicOut }}
-        out:fly={{ y: direction * -40, duration: 100, easing: cubicIn }}
-      >
-        <Component {...slide.props} />
-      </div>
-    {/key}
-  {:else}
-    <div class="h-screen">
-      <Component {...slide.props} />
-    </div>
-  {/if}
-</main>
+<div id="about" class="chapter about-chapter">
+  <About data={resume.about} experience={resume.experience} />
+</div>
+<div id="experience" class="chapter"><Experience data={resume.experience} /></div>
+<div id="skills" class="chapter"><Skills data={resume.skills} /></div>
+<div id="education" class="chapter"><Education data={resume.education} /></div>
 
 <style>
-  .slide-stack {
-    display: grid;
-    grid-template: 1fr / 1fr;
-    transition: margin-left 300ms ease;
+  .chapter {
+    min-height: calc(100dvh - var(--resume-header-height) - 4.75rem);
   }
-  .slide-stack > :global(*) {
-    grid-row: 1;
-    grid-column: 1;
+
+  .about-chapter {
+    display: grid;
   }
 </style>

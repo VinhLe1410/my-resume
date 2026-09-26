@@ -1,231 +1,235 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { browser } from '$app/environment';
-  import { activeSlide } from '$lib/active-slide.svelte';
+  import { replaceState } from '$app/navigation';
+  import CommandBar from '$lib/components/CommandBar.svelte';
+  import SectionBar from '$lib/components/SectionBar.svelte';
   import Sidebar from '$lib/components/Sidebar.svelte';
   import SlideContainer from '$lib/components/SlideContainer.svelte';
-  import { resume } from '$lib/data/resume';
-  import { experienceState } from '$lib/experience-state.svelte';
-  import { slides } from '$lib/slides';
-  import { isViewportBlocked, viewportBlock } from '$lib/viewport-block.svelte';
+  import { goToSection } from '$lib/navigation';
+  import { slides, type SlideId } from '$lib/slides';
+  import { onMount } from 'svelte';
 
-  const BLOCKER_TITLE_ID = 'viewport-blocker-title';
-  const BLOCKER_DESCRIPTION_ID = 'viewport-blocker-description';
+  let active: SlideId = $state('about');
+  const activeIndex = $derived(slides.findIndex((slide) => slide.id === active));
+  const previous = $derived(slides[activeIndex - 1]);
+  const next = $derived(slides[activeIndex + 1]);
 
-  function getInitialSlide(): string {
-    if (browser) {
-      const hash = window.location.hash.slice(1);
-      if (hash && slides.some((s) => s.id === hash)) return hash;
-    }
-    return 'about';
-  }
+  // During a smooth scroll `active` still names the section being left.
+  // Rapid arrow presses count from the section the page is heading to.
+  let pendingId: SlideId | null = null;
 
-  let currentSlide = $state(getInitialSlide());
-  let direction = $state(1);
-  let ready = $state(false);
-  let animate = $state(false);
-  let viewportReady = $state(false);
-
-  const currentSlideConfig = $derived(slides.find((s) => s.id === currentSlide) ?? slides[0]);
-
-  function syncViewportBlock() {
-    if (!browser) return;
-
-    viewportBlock.active = isViewportBlocked(window.innerWidth, window.innerHeight);
-    viewportReady = true;
-  }
-
-  function navigate(id: string) {
-    if (viewportBlock.active || id === currentSlide) return;
-    const currentIndex = slides.findIndex((s) => s.id === currentSlide);
-    const nextIndex = slides.findIndex((s) => s.id === id);
-    direction = nextIndex > currentIndex ? 1 : -1;
-    currentSlide = id;
-    history.replaceState(null, '', `#${id}`);
-  }
-
-  function handleKeydown(e: KeyboardEvent) {
-    if (viewportBlock.active) {
-      if (!e.metaKey && !e.ctrlKey && !e.altKey) {
-        e.preventDefault();
-      }
-      return;
-    }
-
-    // Ignore if user is typing in an input/textarea
-    const tag = (e.target as HTMLElement)?.tagName;
-    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
-
-    const currentIndex = slides.findIndex((s) => s.id === currentSlide);
-
-    // Navigation keys (all slides)
-    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
-      if (currentIndex < slides.length - 1) {
-        e.preventDefault();
-        navigate(slides[currentIndex + 1].id);
-      }
-      return;
-    }
-    if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
-      if (currentIndex > 0) {
-        e.preventDefault();
-        navigate(slides[currentIndex - 1].id);
-      }
-      return;
-    }
-
-    // Experience slide shortcuts
-    if (currentSlide === 'experience') {
-      const experienceCount = resume.experience.length;
-
-      if (e.key === 'a' || e.key === 'A') {
-        e.preventDefault();
-        experienceState.toggleAll(experienceCount);
-        return;
-      }
-
-      const num = parseInt(e.key);
-      if (num >= 1 && num <= experienceCount) {
-        e.preventDefault();
-        experienceState.toggle(num - 1);
-      }
-    }
-  }
-
-  $effect(() => {
-    activeSlide.id = currentSlide;
-  });
-
-  onMount(() => {
-    syncViewportBlock();
-    ready = true;
-    // Enable transitions after first paint
-    requestAnimationFrame(() => {
-      animate = true;
+  function syncActive() {
+    const midpoint = window.innerHeight / 2;
+    const slide = slides.find(({ id }) => {
+      const rect = document.getElementById(id)?.getBoundingClientRect();
+      return rect && rect.top <= midpoint && rect.bottom > midpoint;
     });
-  });
+    if (!slide) return;
+    if (slide.id === pendingId) pendingId = null;
+    if (slide.id === active) return;
+    active = slide.id;
+    if (location.hash !== `#${slide.id}`) {
+      // A fragment keeps the current pathname and query string.
+      // eslint-disable-next-line svelte/no-navigation-without-resolve
+      replaceState(`#${slide.id}`, {});
+    }
+  }
+
+  function cancelPending() {
+    pendingId = null;
+  }
+
+  function handleKeydown(event: KeyboardEvent) {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') {
+      cancelPending();
+      return;
+    }
+    if (event.defaultPrevented || event.isComposing || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey)
+      return;
+    if (window.getSelection()?.toString()) return;
+    if (!(event.target instanceof HTMLElement)) return;
+    if (
+      event.repeat ||
+      event.target.closest('a, button, summary, input, textarea, select, [contenteditable], [role="textbox"]')
+    )
+      return;
+
+    const fromIndex = pendingId ? slides.findIndex(({ id }) => id === pendingId) : activeIndex;
+    const target = slides[fromIndex + (event.key === 'ArrowRight' ? 1 : -1)];
+    if (!target) return;
+    event.preventDefault();
+    pendingId = target.id;
+    goToSection(target.id);
+  }
+
+  onMount(syncActive);
 </script>
 
-<svelte:window onkeydown={handleKeydown} onresize={syncViewportBlock} />
+<svelte:window
+  onkeydown={handleKeydown}
+  onscroll={syncActive}
+  onresize={syncActive}
+  onhashchange={syncActive}
+  onwheel={cancelPending}
+  ontouchstart={cancelPending}
+/>
 
-<div
-  class="resume-shell"
-  data-viewport-ready={viewportReady ? 'true' : 'false'}
-  data-view-blocked={viewportBlock.active ? 'true' : 'false'}
->
-  <div
-    class="resume-deck flex"
-    class:opacity-0={!ready}
-    inert={viewportBlock.active}
-    aria-hidden={viewportBlock.active ? 'true' : 'false'}
-  >
-    <Sidebar {slides} {currentSlide} onNavigate={navigate} />
-    <SlideContainer slide={currentSlideConfig} {direction} {animate} />
-  </div>
-
-  <div
-    class="viewport-blocker"
-    role={viewportBlock.active ? 'dialog' : undefined}
-    aria-modal={viewportBlock.active ? 'true' : undefined}
-    aria-hidden={viewportBlock.active ? 'false' : 'true'}
-    aria-labelledby={BLOCKER_TITLE_ID}
-    aria-describedby={BLOCKER_DESCRIPTION_ID}
-  >
-    <div class="viewport-blocker__panel">
-      <p class="viewport-blocker__eyebrow">Unsupported viewport</p>
-      <p id={BLOCKER_TITLE_ID} class="viewport-blocker__message">
-        I&apos;m sorry, but your screen size is not suitable for viewing my resume. I tried some extra navigation
-        features, but my Lighthouse score dropped significantly.
-      </p>
-      <p id={BLOCKER_DESCRIPTION_ID} class="viewport-blocker__hint">Resize your window or use a larger screen.</p>
+<div class="resume-shell">
+  <Sidebar {active} />
+  <main class="reading-pane" aria-label="Resume sections"><SectionBar /><SlideContainer /></main>
+  <footer class="controls" aria-label="Section navigation">
+    <div class="controls-inner">
+      {#if previous}
+        <a class="control previous" href="#{previous.id}">
+          <span class="control-caption">Previous</span>
+          <span class="control-name">← {previous.label}</span>
+        </a>
+      {:else}
+        <span></span>
+      {/if}
+      <div class="progress">
+        <span class="position" aria-label="Section {activeIndex + 1} of {slides.length}"
+          >0{activeIndex + 1} / 0{slides.length}</span
+        >
+        <div class="shortcuts">
+          <span class="keyboard-hint" aria-label="Use the left and right arrow keys to change sections"
+            ><kbd>←</kbd><kbd>→</kbd> switch</span
+          >
+          <CommandBar />
+        </div>
+      </div>
+      {#if next}
+        <a class="control next" href="#{next.id}">
+          <span class="control-caption">Next</span>
+          <span class="control-name">{next.label} →</span>
+        </a>
+      {:else}
+        <span></span>
+      {/if}
     </div>
-  </div>
+  </footer>
 </div>
 
 <style>
+  :global(html) {
+    --resume-header-height: 4.75rem;
+    --section-bar-height: 3.5rem;
+    scroll-padding-top: var(--resume-header-height);
+    scroll-padding-bottom: 4.75rem;
+    scrollbar-gutter: stable;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html) {
+      scroll-behavior: smooth;
+    }
+  }
+
   .resume-shell {
-    position: relative;
-    min-height: 100vh;
-    overflow: hidden;
+    min-height: 100dvh;
+    padding-bottom: 4.75rem;
   }
 
-  .resume-deck {
-    transform-origin: center;
-    transition:
-      filter 220ms ease,
-      opacity 220ms ease,
-      transform 220ms ease;
+  .reading-pane {
+    width: 100%;
+    max-width: 90rem;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 4.5vw, 5rem);
   }
 
-  .viewport-blocker {
+  .controls {
     position: fixed;
-    inset: 0;
-    z-index: 100;
+    z-index: 10;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    min-height: 4.75rem;
+    border-top: 1px solid var(--color-outline-subtle);
+    background: var(--color-base);
+  }
+
+  .controls-inner {
     display: grid;
-    place-items: center;
-    padding: 2rem;
-    background: rgb(8 8 8 / 0.58);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 220ms ease;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    max-width: 90rem;
+    min-height: 4.75rem;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 4.5vw, 5rem);
   }
 
-  .viewport-blocker__panel {
-    width: min(34rem, 100%);
-    border: 1px solid var(--color-outline-subtle);
-    background: rgb(19 19 19 / 0.92);
-    padding: clamp(1.5rem, 4vw, 2.5rem);
-    box-shadow: 0 1.5rem 4rem rgb(0 0 0 / 0.35);
+  .control {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.25rem;
+    width: fit-content;
+    min-height: 3.5rem;
+    color: var(--color-primary);
+    font: 400 0.75rem/1.3 var(--font-mono);
   }
 
-  .viewport-blocker__eyebrow {
-    margin: 0 0 1rem;
+  .control:hover .control-name {
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+
+  .control.next {
+    justify-self: end;
+    text-align: right;
+  }
+
+  .progress {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .shortcuts {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .control-caption,
+  .position,
+  .keyboard-hint {
     color: var(--color-muted);
-    font-size: 0.75rem;
-    letter-spacing: 0.2em;
+    font: 400 0.67rem/1.3 var(--font-mono);
+    letter-spacing: 0.1em;
     text-transform: uppercase;
   }
 
-  .viewport-blocker__message {
-    margin: 0;
-    color: var(--color-primary);
-    font-family: var(--font-headline);
-    font-size: clamp(1.35rem, 2vw, 1.75rem);
-    line-height: 1.3;
+  .position {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
   }
 
-  .viewport-blocker__hint {
-    margin: 1rem 0 0;
-    color: var(--color-secondary);
-    font-size: 0.95rem;
-    line-height: 1.6;
+  .keyboard-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.6rem;
+    letter-spacing: 0;
+    text-transform: none;
   }
 
-  .resume-shell[data-view-blocked='true'] .resume-deck {
-    filter: blur(18px);
-    opacity: 0.18;
-    pointer-events: none;
-    transform: scale(0.985);
-    user-select: none;
-  }
-
-  .resume-shell[data-view-blocked='true'] .viewport-blocker {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  @media (max-width: 900px), (max-height: 700px) {
-    .resume-shell:not([data-viewport-ready='true']) .resume-deck {
-      filter: blur(18px);
-      opacity: 0.18;
-      pointer-events: none;
-      transform: scale(0.985);
-      user-select: none;
+  @media (max-width: 760px) {
+    :global(html) {
+      --resume-header-height: 6.25rem;
+      --section-bar-height: 3rem;
     }
+  }
 
-    .resume-shell:not([data-viewport-ready='true']) .viewport-blocker {
-      opacity: 1;
-      pointer-events: auto;
+  @media (max-width: 760px), (max-height: 700px) {
+    .keyboard-hint {
+      display: none;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .control {
+      font-size: 0.68rem;
     }
   }
 </style>

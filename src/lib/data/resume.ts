@@ -7,6 +7,11 @@ export type AboutContactRow =
 
 export interface About {
   name: string;
+  role: string;
+  location: string;
+  headline: string;
+  intro: string;
+  /** Page description for search results and link previews. */
   summary: string;
   contact: AboutContactRow[];
 }
@@ -17,6 +22,7 @@ export interface ExperienceEntry {
   location: string;
   period: string;
   summary: string;
+  highlights: string[];
   bullets: string[];
 }
 
@@ -51,10 +57,14 @@ export interface Resume {
 export const resume: Resume = {
   about: {
     name: 'Vinh Le',
+    role: 'Full-stack developer',
+    location: 'VIC, Australia',
+    headline: 'I build web apps, the automation behind them, and the cloud they run on.',
+    intro:
+      'Computer Science graduate with a Data Science major. I work across the stack, from the interface to the AWS infrastructure and CI/CD pipelines behind it, with a strong interest in scalable, user-focused software.',
     summary:
       'Computer Science graduate with a background in Data Science and hands-on experience in full-stack software development and cloud-based systems. Experienced in building and deploying web applications, automation workflows, and AWS infrastructure using modern frameworks and CI/CD practices. Strong interest in developing scalable, user-focused solutions.',
     contact: [
-      { kind: 'text', label: 'Location', value: 'VIC, Australia' },
       { kind: 'email', label: 'Email', address: 'lpvinh2k4@gmail.com' },
       { kind: 'text', label: 'Phone', value: '+61 433 443 221' },
       { kind: 'link', label: 'GitHub', href: 'https://github.com/VinhLe1410' },
@@ -70,14 +80,16 @@ export const resume: Resume = {
       period: 'Feb 2025 — Present',
       summary:
         'Client-facing full-stack role building production systems across Chrome extensions, internal web apps, and AWS cloud infrastructure.',
+      highlights: [
+        'Built scheduled and event-driven AWS Lambda functions for document syncing, API data extraction, and file processing workflows.',
+        'Set up and maintain CI/CD pipelines with GitHub Actions, automating deployments across development, staging, and production environments, using Nx monorepos to manage and share code across multiple applications and services.',
+      ],
       bullets: [
         'Work in a client-facing role, translating business requirements and feature requests into technical solutions and demos.',
         'Conduct project walkthroughs and shoulder-tap demos for stakeholders to validate features and gather feedback.',
         'Develop and maintain multiple production projects, including Chrome extensions, internal back-office web applications, and automation tools.',
-        'Built scheduled and event-driven AWS Lambda functions for document syncing, API data extraction, and file processing workflows.',
         'Design and deploy cloud infrastructure using AWS CDK (TypeScript), provisioning CloudFormation stacks.',
         'Implement cloud services including AWS Amplify, Lambda, S3, DynamoDB, Cognito, Route 53, API Gateway, and Secrets Manager for secure, scalable applications.',
-        'Set up and maintain CI/CD pipelines with GitHub Actions, automating deployments across development, staging, and production environments, using Nx monorepos to manage and share code across multiple applications and services.',
         'Use Jira to track work (epics, spikes, and tickets), communicate progress, and collaborate effectively with the team.',
       ],
     },
@@ -87,11 +99,13 @@ export const resume: Resume = {
       location: 'Remote',
       period: 'Aug 2025 — Feb 2026',
       summary: 'Led architecture and full-stack development for a multi-role educational web application.',
+      highlights: [
+        'Designed and enforced front-end and back-end architecture, including folder structure, data flow, and API integration.',
+        'Built responsive and accessible UIs using Tailwind CSS, focusing on child-friendly, interactive user experiences.',
+      ],
       bullets: [
         'Tech Lead & primary Full-Stack Developer for a multi-role educational web application.',
-        'Designed and enforced front-end and back-end architecture, including folder structure, data flow, and API integration.',
         'Led major codebase refactors, adopting React Query for server-state management to improve performance, caching, and maintainability.',
-        'Built responsive and accessible UIs using Tailwind CSS, focusing on child-friendly, interactive user experiences.',
         'Translated business and educational requirements into database schema design and back-end logic.',
         'Used AI-assisted tooling during refactors to plan, validate, and implement changes while preserving existing functionality and code standards.',
         'Supporting deployment and post-release technical issues, assisting stakeholders with configuration and troubleshooting.',

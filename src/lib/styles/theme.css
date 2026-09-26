@@ -26,45 +26,50 @@
   --color-outline-subtle: #474747;
 }
 
-/* Register sidebar properties so browsers can interpolate them */
-@property --sidebar-w {
-  syntax: '<length>';
-  inherits: true;
-  initial-value: 15rem;
-}
-
-@property --sidebar-px {
-  syntax: '<length>';
-  inherits: true;
-  initial-value: 2rem;
-}
-
-@property --sidebar-highlight-inset {
-  syntax: '<length>';
-  inherits: true;
-  initial-value: -0.5rem;
-}
-
-/* Sidebar responsive sizing */
-:root {
-  --sidebar-w: 15rem;
-  --sidebar-px: 2rem;
-  --sidebar-highlight-inset: clamp(-0.5rem, calc(-1vw + 6px), -0.25rem);
-}
-
-@media (max-width: 1080px) {
-  :root {
-    --sidebar-w: 11rem;
-    --sidebar-px: 1.25rem;
-  }
-}
-
-/* Base styles */
 html,
 body {
   background-color: var(--color-base);
   color: var(--color-secondary);
+  font-family: var(--font-headline);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
+}
+
+kbd {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.6em;
+  height: 1.6em;
+  padding-inline: 0.35em;
+  border: 1px solid var(--color-outline-subtle);
+  color: var(--color-secondary);
+  font: inherit;
   font-family: var(--font-mono);
+  line-height: 1;
+  transition:
+    border-color 180ms ease,
+    color 180ms ease;
+}
+
+/* Set by search navigation on the element it scrolled to. */
+[data-found] {
+  animation: found 2s ease-out;
+}
+
+@keyframes found {
+  0%,
+  40% {
+    background-color: rgb(255 255 255 / 0.1);
+    box-shadow: 0 0 0 0.4rem rgb(255 255 255 / 0.1);
+  }
+
+  100% {
+    background-color: rgb(255 255 255 / 0);
+    box-shadow: 0 0 0 0.4rem rgb(255 255 255 / 0);
+  }
 }
 
 ::selection {
