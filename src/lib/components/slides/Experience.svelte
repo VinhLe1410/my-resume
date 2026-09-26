@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { ExperienceEntry } from '$lib/data/resume';
   import SlideLayout from '$lib/components/SlideLayout.svelte';
+  import { anchor } from '$lib/search';
 
   let { data }: { data: ExperienceEntry[] } = $props();
 </script>
@@ -8,26 +9,26 @@
 <SlideLayout id="experience" title="Experience">
   {#snippet body()}
     <div class="roles">
-      {#each data as entry (entry.company)}
+      {#each data as entry, role (entry.company)}
         <article class="role-entry">
           <div class="role-meta">
             <span class="period">{entry.period}</span>
             <span>{entry.location}</span>
           </div>
           <div class="role-content">
-            <h3>{entry.role}</h3>
+            <h3 id={anchor.roleTitle(role)}>{entry.role}</h3>
             <p class="company">{entry.company}</p>
-            <p class="description">{entry.summary}</p>
+            <p class="description" id={anchor.roleSummary(role)}>{entry.summary}</p>
             <ul class="highlights">
-              {#each entry.highlights as highlight (highlight)}
-                <li>{highlight}</li>
+              {#each entry.highlights as highlight, line (highlight)}
+                <li id={anchor.highlight(role, line)}>{highlight}</li>
               {/each}
             </ul>
             <details>
               <summary>More contributions <span aria-hidden="true">↗</span></summary>
               <ul class="more-contributions">
-                {#each entry.bullets as bullet (bullet)}
-                  <li>{bullet}</li>
+                {#each entry.bullets as bullet, line (bullet)}
+                  <li id={anchor.contribution(role, line)}>{bullet}</li>
                 {/each}
               </ul>
             </details>
@@ -71,6 +72,7 @@
   }
 
   h3 {
+    scroll-margin-top: calc(var(--section-bar-height) + 2rem);
     color: var(--color-primary);
     font: 700 clamp(1.6rem, 3.2vw, 2.8rem)/1.13 var(--font-headline);
     letter-spacing: -0.045em;
@@ -162,6 +164,10 @@
 
     .highlights {
       grid-template-columns: 1fr;
+    }
+
+    h3 {
+      scroll-margin-top: calc(var(--section-bar-height) + 4rem);
     }
   }
 

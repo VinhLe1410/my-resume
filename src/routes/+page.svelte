@@ -1,5 +1,6 @@
 <script lang="ts">
   import { replaceState } from '$app/navigation';
+  import CommandBar from '$lib/components/CommandBar.svelte';
   import SectionBar from '$lib/components/SectionBar.svelte';
   import Sidebar from '$lib/components/Sidebar.svelte';
   import SlideContainer from '$lib/components/SlideContainer.svelte';
@@ -89,9 +90,12 @@
         <span class="position" aria-label="Section {activeIndex + 1} of {slides.length}"
           >0{activeIndex + 1} / 0{slides.length}</span
         >
-        <span class="keyboard-hint" aria-label="Use the left and right arrow keys to change sections"
-          >← / → to switch</span
-        >
+        <div class="shortcuts">
+          <span class="keyboard-hint" aria-label="Use the left and right arrow keys to change sections"
+            ><kbd>←</kbd><kbd>→</kbd> switch</span
+          >
+          <CommandBar />
+        </div>
       </div>
       {#if next}
         <a class="control next" href="#{next.id}">
@@ -111,6 +115,7 @@
     --section-bar-height: 3rem;
     scroll-padding-top: var(--resume-header-height);
     scroll-padding-bottom: 4.75rem;
+    scrollbar-gutter: stable;
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -177,7 +182,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0.4rem;
+  }
+
+  .shortcuts {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
   }
 
   .control-caption,
@@ -195,7 +206,11 @@
   }
 
   .keyboard-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
     font-size: 0.6rem;
+    letter-spacing: 0;
     text-transform: none;
   }
 

@@ -1,6 +1,7 @@
 <script lang="ts">
   import SlideLayout from '$lib/components/SlideLayout.svelte';
   import type { Education } from '$lib/data/resume';
+  import { anchor } from '$lib/search';
 
   let { data }: { data: Education } = $props();
 </script>
@@ -10,15 +11,15 @@
     <div class="education-grid">
       <div class="degree">
         <p class="period">{data.period} / {data.mode}</p>
-        <h3>{data.degree}</h3>
+        <h3 id={anchor.degree}>{data.degree}</h3>
         <p class="institution">{data.institution}</p>
-        <p class="description">{data.description}</p>
+        <p class="description" id={anchor.degreeSummary}>{data.description}</p>
       </div>
       <div class="achievements">
         <h4>Notable grades</h4>
         <ul>
-          {#each data.achievements as achievement (achievement)}
-            <li>{achievement}</li>
+          {#each data.achievements as achievement, line (achievement)}
+            <li id={anchor.grade(line)}>{achievement}</li>
           {/each}
         </ul>
       </div>

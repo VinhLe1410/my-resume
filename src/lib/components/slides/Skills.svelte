@@ -1,6 +1,7 @@
 <script lang="ts">
   import SlideLayout from '$lib/components/SlideLayout.svelte';
   import type { SkillCategory } from '$lib/data/resume';
+  import { anchor } from '$lib/search';
 
   let { data }: { data: SkillCategory[] } = $props();
 </script>
@@ -9,12 +10,12 @@
   {#snippet body()}
     <p class="legend"><span aria-hidden="true"></span> Brighter skills have been active in the past six months</p>
     <div class="skill-grid">
-      {#each data as category (category.label)}
-        <div class="category">
+      {#each data as category, group (category.label)}
+        <div class="category" id={anchor.skillGroup(group)}>
           <h3>{category.label}</h3>
           <ul>
-            {#each category.items as item (item.name)}
-              <li class:active={item.pinned}>{item.name}</li>
+            {#each category.items as item, index (item.name)}
+              <li id={anchor.skill(group, index)} class:active={item.pinned}>{item.name}</li>
             {/each}
           </ul>
         </div>

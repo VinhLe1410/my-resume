@@ -38,6 +38,40 @@ body {
   outline-offset: 4px;
 }
 
+kbd {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.6em;
+  height: 1.6em;
+  padding-inline: 0.35em;
+  border: 1px solid var(--color-outline-subtle);
+  color: var(--color-secondary);
+  font: inherit;
+  font-family: var(--font-mono);
+  line-height: 1;
+  transition:
+    border-color 180ms ease,
+    color 180ms ease;
+}
+
+/* Set by search navigation on the element it scrolled to. */
+[data-found] {
+  animation: found 2s ease-out;
+}
+
+@keyframes found {
+  0%,
+  40% {
+    background-color: rgb(255 255 255 / 0.1);
+    box-shadow: 0 0 0 0.4rem rgb(255 255 255 / 0.1);
+  }
+
+  100% {
+    background-color: rgb(255 255 255 / 0);
+    box-shadow: 0 0 0 0.4rem rgb(255 255 255 / 0);
+  }
+}
+
 ::selection {
   background: var(--color-primary);
   color: var(--color-base);
