@@ -95,7 +95,8 @@
     position: relative;
     top: var(--rule-y);
     flex: 1;
-    height: 1px;
+    /* The resting hairline thickens to match the pinned bar's 2px progress line. */
+    height: calc(1px + var(--collapse) * 1px);
     margin-left: var(--rule-shift);
     background: linear-gradient(
       to right,

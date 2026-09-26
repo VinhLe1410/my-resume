@@ -64,13 +64,13 @@
   .bar-title {
     flex: none;
     color: var(--color-primary);
-    font: 700 1.05rem/1 var(--font-headline);
+    font: 700 1.75rem/1 var(--font-headline);
     letter-spacing: -0.055em;
   }
 
   .bar-track {
     flex: 1;
-    height: 1px;
+    height: 2px;
     background: linear-gradient(
       to right,
       var(--color-primary) calc(var(--progress) * 100%),
@@ -80,7 +80,7 @@
 
   @media (max-width: 760px) {
     .bar-title {
-      font-size: 0.95rem;
+      font-size: 1.125rem;
     }
   }
 </style>

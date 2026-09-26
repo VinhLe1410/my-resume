@@ -112,7 +112,7 @@
 <style>
   :global(html) {
     --resume-header-height: 4.75rem;
-    --section-bar-height: 3rem;
+    --section-bar-height: 3.5rem;
     scroll-padding-top: var(--resume-header-height);
     scroll-padding-bottom: 4.75rem;
     scrollbar-gutter: stable;
@@ -217,7 +217,7 @@
   @media (max-width: 760px) {
     :global(html) {
       --resume-header-height: 6.25rem;
-      --section-bar-height: 2.75rem;
+      --section-bar-height: 3rem;
     }
   }
 
