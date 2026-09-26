@@ -8,7 +8,7 @@
 
 <SlideLayout id="skills" title="Skills">
   {#snippet body()}
-    <p class="legend"><span aria-hidden="true"></span> Brighter skills have been active in the past six months</p>
+    <p class="legend"><span aria-hidden="true"></span> Brighter skills reflect recent project work</p>
     <div class="skill-grid">
       {#each data as category, group (category.label)}
         <div class="category" id={anchor.skillGroup(group)}>

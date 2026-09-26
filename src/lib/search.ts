@@ -138,7 +138,7 @@ export const searchEntries: SearchEntry[] = [
       draft(
         'Skills',
         item.name,
-        item.pinned ? `${group.label} · used in the last six months` : group.label,
+        item.pinned ? `${group.label} · recent project work` : group.label,
         reveal(anchor.skill(g, i), 'center'),
         group.label,
       ),
