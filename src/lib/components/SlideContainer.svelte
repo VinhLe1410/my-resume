@@ -6,7 +6,9 @@
   import { resume } from '$lib/data/resume';
 </script>
 
-<div id="about" class="chapter about-chapter"><About data={resume.about} /></div>
+<div id="about" class="chapter about-chapter">
+  <About data={resume.about} experience={resume.experience} />
+</div>
 <div id="experience" class="chapter"><Experience data={resume.experience} /></div>
 <div id="skills" class="chapter"><Skills data={resume.skills} /></div>
 <div id="education" class="chapter"><Education data={resume.education} /></div>

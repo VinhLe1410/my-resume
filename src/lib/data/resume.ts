@@ -7,6 +7,11 @@ export type AboutContactRow =
 
 export interface About {
   name: string;
+  role: string;
+  location: string;
+  headline: string;
+  intro: string;
+  /** Page description for search results and link previews. */
   summary: string;
   contact: AboutContactRow[];
 }
@@ -52,10 +57,14 @@ export interface Resume {
 export const resume: Resume = {
   about: {
     name: 'Vinh Le',
+    role: 'Full-stack developer',
+    location: 'VIC, Australia',
+    headline: 'I build web apps, the automation behind them, and the cloud they run on.',
+    intro:
+      'Computer Science graduate with a Data Science major. I work across the stack, from the interface to the AWS infrastructure and CI/CD pipelines behind it, with a strong interest in scalable, user-focused software.',
     summary:
       'Computer Science graduate with a background in Data Science and hands-on experience in full-stack software development and cloud-based systems. Experienced in building and deploying web applications, automation workflows, and AWS infrastructure using modern frameworks and CI/CD practices. Strong interest in developing scalable, user-focused solutions.',
     contact: [
-      { kind: 'text', label: 'Location', value: 'VIC, Australia' },
       { kind: 'email', label: 'Email', address: 'lpvinh2k4@gmail.com' },
       { kind: 'text', label: 'Phone', value: '+61 433 443 221' },
       { kind: 'link', label: 'GitHub', href: 'https://github.com/VinhLe1410' },

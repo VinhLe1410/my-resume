@@ -1,166 +1,289 @@
 <script lang="ts">
-  import type { About } from '$lib/data/resume';
+  import { brandIcons } from '$lib/brand-icons';
+  import type { About, ExperienceEntry } from '$lib/data/resume';
+  import { anchor } from '$lib/search';
+  import { onMount } from 'svelte';
 
-  let { data }: { data: About } = $props();
+  let { data, experience }: { data: About; experience: ExperienceEntry[] } = $props();
+
+  const profiles = $derived(
+    data.contact.flatMap((row) => {
+      if (row.kind !== 'link') return [];
+      const icon = brandIcons[row.label];
+      if (!icon) throw new Error(`No icon for the ${row.label} profile link`);
+      return [{ label: row.label, href: row.href, icon }];
+    }),
+  );
+
+  // Victoria observes AEST/AEDT; rendered after mount so the prerendered page carries no build-time clock.
+  let localTime: string | null = $state(null);
+
+  onMount(() => {
+    const format = new Intl.DateTimeFormat('en-AU', {
+      timeZone: 'Australia/Melbourne',
+      hour: 'numeric',
+      minute: '2-digit',
+      timeZoneName: 'short',
+    });
+    const tick = () => (localTime = format.format(new Date()));
+    tick();
+    const timer = setInterval(tick, 15_000);
+    return () => clearInterval(timer);
+  });
 </script>
 
 <section class="intro" aria-label="About">
-  <div class="identity">
-    <p class="identity-label">Resume / VIC, Australia</p>
-    <h1 tabindex="-1">{data.name}</h1>
-    <p class="role">Full-stack developer</p>
-  </div>
-  <div class="intro-copy">
-    <p class="lead">Building web applications, automation workflows, and cloud infrastructure.</p>
-    <p class="summary">{data.summary}</p>
-    <a class="work-link" href="#experience">Explore my experience <span aria-hidden="true">↘</span></a>
-  </div>
-
-  <div class="contact-row">
-    {#each data.contact as row (row.label)}
-      <div class="contact-item">
-        <span class="contact-label">{row.label}</span>
-        {#if row.kind === 'text'}
-          <span>{row.value}</span>
-        {:else if row.kind === 'email'}
-          <a href="mailto:{row.address}">{row.address}</a>
-        {:else}
-          <a href={row.href} target="_blank" rel="noopener noreferrer external">{row.text ?? row.label} ↗</a>
-        {/if}
+  <div class="layout">
+    <div class="identity">
+      <!-- The profile links follow the name like a footnote marker, outside the heading's text. -->
+      <div class="name-line">
+        <h1 tabindex="-1">{data.name}</h1>
+        <ul class="profiles" aria-label="Profiles">
+          {#each profiles as profile (profile.label)}
+            <li>
+              <a href={profile.href} title={profile.label} target="_blank" rel="noopener noreferrer external">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d={profile.icon} /></svg>
+                <span class="sr-only">{profile.label}</span>
+              </a>
+            </li>
+          {/each}
+        </ul>
       </div>
-    {/each}
+      <p class="details">
+        <span class="role">{data.role}</span>
+        <span>{data.location}</span>
+        <span class="clock">{localTime ? `${localTime} local time` : ''}</span>
+      </p>
+    </div>
+
+    <div class="essay">
+      <p class="headline">{data.headline}</p>
+      <p class="summary">{data.intro}</p>
+    </div>
+
+    <div class="work">
+      <p class="work-label" id="about-experience">Experience</p>
+      <ul aria-labelledby="about-experience">
+        {#each experience as entry, role (entry.company)}
+          <li>
+            <a class="job" href="#{anchor.roleTitle(role)}">
+              <span class="job-title">{entry.role}</span>
+              <span class="job-meta"><span>{entry.company}</span><span class="period">{entry.period}</span></span>
+            </a>
+          </li>
+        {/each}
+      </ul>
+    </div>
   </div>
 </section>
 
 <style>
   .intro {
+    container: intro / inline-size;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.75fr);
-    grid-template-rows: auto 1fr;
-    column-gap: clamp(3rem, 8vw, 8rem);
+    align-content: center;
     min-height: 100%;
-    padding-block: clamp(2.5rem, 4vw, 5rem);
+    padding-block: clamp(2rem, 4vw, 4.5rem);
   }
 
-  .intro-copy {
-    grid-column: 2;
-    grid-row: 1 / 3;
+  /* Identity top left, essay top right, jobs across both columns underneath. */
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'identity' 'essay' 'work';
+    row-gap: 3rem;
   }
 
-  .identity-label,
-  .contact-label {
-    font: 400 0.7rem/1.5 var(--font-mono);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--color-muted);
+  @container intro (min-width: 42rem) {
+    .layout {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-areas:
+        'identity essay'
+        'work work';
+      column-gap: clamp(2.5rem, 6cqi, 6rem);
+      row-gap: clamp(3rem, 7dvh, 5rem);
+    }
+  }
+
+  .identity {
+    grid-area: identity;
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  /* Carries the name's size so the markers can be measured in em of the name. */
+  .name-line {
+    margin-left: -0.04em;
+    font: 700 clamp(3.5rem, 20cqi, 7rem)/0.85 var(--font-headline);
+  }
+
+  @container intro (min-width: 42rem) {
+    .name-line {
+      font-size: clamp(3.5rem, min(12cqi, 16dvh), 8.5rem);
+    }
   }
 
   h1 {
-    margin: 1.25rem 0 0;
+    display: inline;
     color: var(--color-primary);
-    font: 700 clamp(4.25rem, 9vw, 8.5rem)/0.9 var(--font-headline);
+    font: inherit;
     letter-spacing: -0.075em;
   }
 
-  .role {
+  .details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
     margin-top: 1.75rem;
-    color: var(--color-secondary);
-    font: 500 clamp(1.35rem, 2.2vw, 2.25rem)/1.2 var(--font-headline);
-    letter-spacing: -0.035em;
+    color: var(--color-muted);
+    font: 400 0.78rem/1.5 var(--font-mono);
+    letter-spacing: 0.03em;
   }
 
-  .lead {
+  .role {
     color: var(--color-primary);
-    font: 500 clamp(1.5rem, 2.3vw, 2.4rem)/1.24 var(--font-headline);
+  }
+
+  .clock {
+    min-height: 1.5em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /*
+   * Starts 0.12em past the visible edge of the last letter, with the box tops level with the flat
+   * top of the capitals. The name's text box ends about 0.23em past the ink of its final "e",
+   * which the negative margin takes back.
+   */
+  .profiles {
+    --box: clamp(20px, 0.18em, 24px);
+    --gap: clamp(4px, 0.045em, 6px);
+    display: inline-flex;
+    gap: var(--gap);
+    margin: 0.07em 0 0 calc(0.12em - 0.23em);
+    padding: 0;
+    vertical-align: top;
+    list-style: none;
+  }
+
+  .profiles a {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: var(--box);
+    height: var(--box);
+    border: 1px solid var(--color-outline-subtle);
+    color: var(--color-secondary);
+    transition:
+      border-color 120ms ease,
+      color 120ms ease;
+  }
+
+  /* About 30×44px of touch area; neighbouring areas meet in the gap without overlapping. */
+  .profiles a::after {
+    content: '';
+    position: absolute;
+    inset: -11px calc(var(--gap) / -2);
+  }
+
+  .profiles a:hover,
+  .profiles a:focus-visible {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .profiles svg {
+    width: clamp(12px, 0.1em, 14px);
+    height: clamp(12px, 0.1em, 14px);
+    fill: currentColor;
+  }
+
+  .essay {
+    grid-area: essay;
+    align-self: start;
+  }
+
+  .headline {
+    color: var(--color-primary);
+    font: 500 clamp(1.6rem, 2.4vw, 2.4rem)/1.15 var(--font-headline);
     letter-spacing: -0.035em;
-    max-width: 25ch;
-    text-wrap: balance;
+    text-wrap: pretty;
   }
 
   .summary {
     margin-top: 1.5rem;
-    max-width: 58ch;
     color: var(--color-secondary);
-    font: 400 0.95rem/1.7 var(--font-headline);
+    font: 400 1rem/1.65 var(--font-headline);
   }
 
-  .work-link {
-    display: inline-flex;
-    gap: 2rem;
-    align-items: center;
-    margin-top: 1.75rem;
-    padding-bottom: 0.65rem;
-    border-bottom: 1px solid var(--color-primary);
-    color: var(--color-primary);
-    font: 400 0.72rem/1.5 var(--font-mono);
-    letter-spacing: 0.08em;
+  .work {
+    grid-area: work;
+  }
+
+  .work-label {
+    margin-bottom: 1rem;
+    color: var(--color-muted);
+    font: 400 0.68rem/1.5 var(--font-mono);
+    letter-spacing: 0.15em;
     text-transform: uppercase;
   }
 
-  .work-link span {
-    font-size: 1.3rem;
-    transition: transform 180ms ease;
-  }
-
-  .work-link:hover span {
-    transform: translate(3px, 3px);
-  }
-
-  .contact-row {
-    grid-column: 1;
-    grid-row: 2;
-    align-self: end;
+  .work ul {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1.5rem;
-    margin-top: 3rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--color-outline-subtle);
+    padding: 0;
+    list-style: none;
   }
 
-  .contact-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
+  /* Same columns and gap as the row above, so each job sits under one of them. */
+  @container intro (min-width: 42rem) {
+    .work ul {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: clamp(2.5rem, 6cqi, 6rem);
+    }
+  }
+
+  /* Same top rule as the highlights in the Experience section. */
+  .job {
+    display: grid;
+    gap: 0.35rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-outline);
+  }
+
+  .job-title {
     color: var(--color-primary);
-    font: 400 0.78rem/1.4 var(--font-mono);
-    overflow-wrap: anywhere;
+    font: 500 1.05rem/1.35 var(--font-headline);
+    letter-spacing: -0.015em;
   }
 
-  .contact-item a:hover {
+  /* Company and period wrap as whole pieces, never mid-period. */
+  .job-meta {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 1.25rem;
+    color: var(--color-muted);
+    font: 400 0.72rem/1.5 var(--font-mono);
+    letter-spacing: 0.02em;
+  }
+
+  .period {
+    white-space: nowrap;
+  }
+
+  .job:hover .job-title {
     text-decoration: underline;
-    text-underline-offset: 0.25em;
-  }
-
-  @media (max-width: 900px) {
-    .intro {
-      display: block;
-      min-height: 0;
-    }
-
-    .intro-copy {
-      margin-top: 3rem;
-    }
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
   }
 
   @media (max-width: 760px) {
     .intro {
       padding-top: 2.5rem;
     }
-
-    h1 {
-      font-size: clamp(4.2rem, 17vw, 7rem);
-    }
-  }
-
-  @media (max-width: 430px) {
-    .contact-row {
-      grid-template-columns: 1fr;
-    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .work-link span {
+    .profiles a {
       transition: none;
     }
   }
