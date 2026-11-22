@@ -1,5 +1,6 @@
 <script lang="ts">
   import { resume } from '$lib/data/resume';
+  import { scramble } from '$lib/scramble';
   import { slides, type SlideId } from '$lib/slides';
 
   let { active }: { active: SlideId } = $props();
@@ -10,10 +11,14 @@
     <a class="brand" href="#about" aria-label="Vinh Le, About section">{resume.about.name}</a>
     <nav aria-label="Resume sections">
       {#each slides as slide (slide.id)}
-        <a href="#{slide.id}" aria-current={slide.id === active ? 'page' : undefined}>{slide.label}</a>
+        <a href="#{slide.id}" aria-current={slide.id === active ? 'page' : undefined} {@attach scramble}
+          >{slide.label}</a
+        >
       {/each}
     </nav>
-    <a class="header-contact" href="mailto:lpvinh2k4@gmail.com">Get in touch <span aria-hidden="true">↗</span></a>
+    <a class="header-contact" href="mailto:lpvinh2k4@gmail.com" {@attach scramble}
+      >Get in touch <span aria-hidden="true">↗</span></a
+    >
   </div>
 </header>
 

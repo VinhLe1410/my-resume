@@ -1,6 +1,9 @@
 <script lang="ts">
   import { brandIcons } from '$lib/brand-icons';
   import ActivityHeatmap from '$lib/components/ActivityHeatmap.svelte';
+  import DecodeText from '$lib/components/DecodeText.svelte';
+  import ShaderCanvas from '$lib/components/ShaderCanvas.svelte';
+  import { ascii } from '$lib/shaders';
   import type { About } from '$lib/data/resume';
   import { onMount } from 'svelte';
 
@@ -33,6 +36,7 @@
 </script>
 
 <section class="intro" aria-label="About">
+  <div class="backdrop"><ShaderCanvas fragment={ascii} /></div>
   <div class="layout">
     <div class="identity">
       <!-- The profile links follow the name like a footnote marker, outside the heading's text. -->
@@ -52,12 +56,27 @@
       <p class="details">
         <span class="role">{data.role}</span>
         <span>{data.location}</span>
-        <span class="clock">{localTime ? `${localTime} local time` : ''}</span>
+        <span class="clock"
+          ><DecodeText
+            text={localTime ? `${localTime} local time` : null}
+            placeholder="00:00 pm AEST local time"
+          /></span
+        >
       </p>
     </div>
 
     <div class="essay">
-      <p class="headline">{data.headline}</p>
+      <!-- Each character appears in turn, like a terminal typing; screen readers get the whole line at once. -->
+      <p class="headline">
+        <span class="sr-only">{data.headline}</span>
+        <span class="ghost" aria-hidden="true">{data.headline}</span>
+        <span class="typed" aria-hidden="true"
+          >{#each Array.from(data.headline) as char, index (index)}<span style:--i={index}>{char}</span>{/each}<span
+            class="caret"
+            style:--n={data.headline.length}
+          ></span></span
+        >
+      </p>
       <p class="summary">{data.intro}</p>
       <p class="now"><span>Now</span>{data.now}</p>
     </div>
@@ -83,11 +102,30 @@
 
 <style>
   .intro {
+    position: relative;
     container: intro / inline-size;
     display: grid;
     align-content: center;
     min-height: 100%;
     padding-block: clamp(2rem, 4vw, 4.5rem);
+  }
+
+  /* The glyph field fills the open space around the name and fades out before any paragraph. */
+  .backdrop {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse 90% 26% at 70% 12%, black 15%, transparent 70%);
+  }
+
+  @container intro (min-width: 42rem) {
+    .backdrop {
+      mask-image: radial-gradient(ellipse 34% 40% at 24% 42%, black 20%, transparent 72%);
+    }
+  }
+
+  .layout {
+    position: relative;
   }
 
   /* Identity top left, essay top right, activity and current work underneath. */
@@ -137,11 +175,19 @@
   .details {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    align-items: flex-start;
+    gap: 0.2rem;
     margin-top: 1.75rem;
-    color: var(--color-muted);
+    color: var(--color-secondary);
     font: 400 0.78rem/1.5 var(--font-mono);
     letter-spacing: 0.03em;
+  }
+
+  /* Each line sits on a solid strip, like a selected terminal line, so it reads over the glyph field. */
+  .details > span {
+    margin-left: -0.45em;
+    padding: 0.05em 0.45em;
+    background: var(--color-base);
   }
 
   .role {
@@ -211,6 +257,51 @@
     font: 500 clamp(1.6rem, 2.4vw, 2.4rem)/1.15 var(--font-headline);
     letter-spacing: -0.035em;
     text-wrap: pretty;
+  }
+
+  /* The typed line sits on an invisible full copy, so the slide keeps its final height while it types. */
+  .headline {
+    display: grid;
+  }
+
+  .ghost,
+  .typed {
+    grid-area: 1 / 1;
+  }
+
+  .ghost {
+    visibility: hidden;
+  }
+
+  .caret {
+    display: inline-block;
+    width: 0.45em;
+    height: 0.85em;
+    margin-left: 0.1em;
+    vertical-align: -0.05em;
+    background: currentColor;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .typed span {
+      animation: type-in 0s calc(300ms + var(--i) * 30ms) both;
+    }
+
+    .typed .caret {
+      animation: blink 1.1s steps(1) calc(300ms + var(--n) * 30ms) infinite;
+    }
+  }
+
+  @keyframes type-in {
+    from {
+      display: none;
+    }
+  }
+
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
   }
 
   .summary {

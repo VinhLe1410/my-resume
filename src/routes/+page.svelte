@@ -5,6 +5,7 @@
   import Sidebar from '$lib/components/Sidebar.svelte';
   import SlideContainer from '$lib/components/SlideContainer.svelte';
   import { goToSection } from '$lib/navigation';
+  import { scramble } from '$lib/scramble';
   import { slides, type SlideId } from '$lib/slides';
   import { onMount } from 'svelte';
 
@@ -81,7 +82,7 @@
       {#if previous}
         <a class="control previous" href="#{previous.id}">
           <span class="control-caption">Previous</span>
-          <span class="control-name">← {previous.label}</span>
+          <span class="control-name" {@attach scramble}>← {previous.label}</span>
         </a>
       {:else}
         <span></span>
@@ -100,7 +101,7 @@
       {#if next}
         <a class="control next" href="#{next.id}">
           <span class="control-caption">Next</span>
-          <span class="control-name">{next.label} →</span>
+          <span class="control-name" {@attach scramble}>{next.label} →</span>
         </a>
       {:else}
         <span></span>

@@ -5,6 +5,8 @@
   const STEP = 13;
   const LABEL_HEIGHT = 18;
   const DAY_MS = 86_400_000;
+  // One character per day, denser for busier days, like terminal output.
+  const GLYPHS = ['·', ':', '+', '*', '#'];
 
   // Dates are calendar days in UTC, so the prerendered page matches every visitor's.
   const start = Date.parse(`${activity.start}T00:00:00Z`);
@@ -44,11 +46,11 @@
 <figure class="heatmap">
   <svg viewBox="0 0 {width} {height}" role="img" aria-label="{activity.total} GitHub contributions in the last year">
     {#each months as month (month.x)}
-      <text x={month.x} y="11" aria-hidden="true">{month.label}</text>
+      <text class="month" x={month.x} y="11" aria-hidden="true">{month.label}</text>
     {/each}
     {#each cells as cell (cell.date.getTime())}
-      <rect x={cell.x} y={cell.y} width={CELL} height={CELL} class="level-{cell.level}"
-        ><title>{describe(cell.count, cell.date)}</title></rect
+      <text class="day level-{cell.level}" x={cell.x + CELL / 2} y={cell.y + CELL - 1}
+        >{GLYPHS[cell.level]}<title>{describe(cell.count, cell.date)}</title></text
       >
     {/each}
   </svg>
@@ -71,25 +73,27 @@
     height: auto;
   }
 
-  text {
+  .month {
     fill: var(--color-muted);
     font: 400 11px var(--font-mono);
   }
 
-  rect {
-    rx: 1.5px;
+  .day {
+    font: 700 12px var(--font-mono);
+    text-anchor: middle;
+    pointer-events: bounding-box;
   }
 
   .level-0 {
-    fill: var(--color-surface-high);
+    fill: #3a3a3a;
   }
 
   .level-1 {
-    fill: #4a4a4a;
+    fill: #6a6a6a;
   }
 
   .level-2 {
-    fill: #7a7a7a;
+    fill: #9a9a9a;
   }
 
   .level-3 {
