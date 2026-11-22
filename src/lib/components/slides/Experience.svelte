@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { ExperienceEntry } from '$lib/data/resume';
   import SlideLayout from '$lib/components/SlideLayout.svelte';
+  import { emphasis } from '$lib/emphasis';
   import { anchor } from '$lib/search';
 
   let { data }: { data: ExperienceEntry[] } = $props();
@@ -19,19 +20,19 @@
             <h3 id={anchor.roleTitle(role)}>{entry.role}</h3>
             <p class="company">{entry.company}</p>
             <p class="description" id={anchor.roleSummary(role)}>{entry.summary}</p>
-            <ul class="highlights">
-              {#each entry.highlights as highlight, line (highlight)}
-                <li id={anchor.highlight(role, line)}>{highlight}</li>
-              {/each}
-            </ul>
-            <details>
-              <summary>More contributions <span aria-hidden="true">↗</span></summary>
-              <ul class="more-contributions">
-                {#each entry.bullets as bullet, line (bullet)}
-                  <li id={anchor.contribution(role, line)}>{bullet}</li>
-                {/each}
-              </ul>
-            </details>
+            {#each entry.groups as group, g (group.label ?? g)}
+              <div class="group">
+                {#if group.label}<h4>{group.label}</h4>{/if}
+                <ul>
+                  {#each group.bullets as bullet, line (bullet)}
+                    <li id={anchor.bullet(role, g, line)}>
+                      {#each emphasis(bullet) as part, i (i)}{#if part.strong}<strong>{part.text}</strong
+                          >{:else}{part.text}{/if}{/each}
+                    </li>
+                  {/each}
+                </ul>
+              </div>
+            {/each}
           </div>
         </article>
       {/each}
@@ -93,60 +94,42 @@
     font: 400 1.05rem/1.6 var(--font-headline);
   }
 
-  .highlights {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
-    gap: 1.5rem 2.5rem;
+  .group {
+    max-width: 72ch;
     margin-top: 2.25rem;
-    padding: 0;
-    list-style: none;
   }
 
-  .highlights li {
-    padding-top: 1rem;
-    border-top: 1px solid var(--color-outline);
+  h4 {
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--color-outline);
     color: var(--color-primary);
-    font: 500 0.98rem/1.55 var(--font-headline);
-  }
-
-  details {
-    margin-top: 2rem;
-  }
-
-  summary {
-    width: fit-content;
-    color: var(--color-primary);
-    cursor: pointer;
-    font: 400 0.72rem/1.4 var(--font-mono);
+    font: 400 0.72rem/1.5 var(--font-mono);
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    list-style: none;
-    border-bottom: 1px solid var(--color-outline);
-    padding: 0.5rem 0;
   }
 
-  summary::-webkit-details-marker {
-    display: none;
-  }
-
-  summary span {
-    display: inline-block;
-    margin-left: 0.6rem;
-    transition: transform 180ms ease;
-  }
-
-  details[open] summary span {
-    transform: rotate(90deg);
-  }
-
-  .more-contributions {
-    max-width: 70ch;
+  .group ul {
     display: grid;
     gap: 0.9rem;
-    margin-top: 1.5rem;
+    margin-top: 1.25rem;
     padding-left: 1.2rem;
     color: var(--color-secondary);
-    font: 400 0.95rem/1.6 var(--font-headline);
+    font: 400 0.98rem/1.6 var(--font-headline);
+    list-style: square;
+  }
+
+  .group li::marker {
+    color: var(--color-muted);
+  }
+
+  .group:not(:has(h4)) ul {
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-outline);
+  }
+
+  strong {
+    color: var(--color-primary);
+    font-weight: 700;
   }
 
   @media (max-width: 760px) {
@@ -162,18 +145,8 @@
       gap: 0.5rem 1.25rem;
     }
 
-    .highlights {
-      grid-template-columns: 1fr;
-    }
-
     h3 {
       scroll-margin-top: calc(var(--section-bar-height) + 4rem);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    summary span {
-      transition: none;
     }
   }
 </style>
