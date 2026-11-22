@@ -17,6 +17,8 @@
 
 <style>
   .chapter {
+    /* Anchors land with the heading at its sticky spot, so the previous section's bar has already handed over. */
+    scroll-margin-top: calc(var(--landing-gap) - var(--section-pad-top));
     min-height: calc(100dvh - var(--resume-header-height) - 4.75rem);
   }
 

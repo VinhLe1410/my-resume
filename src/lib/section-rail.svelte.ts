@@ -13,6 +13,7 @@ interface RailSection {
 }
 
 interface SectionGeometry {
+  stickTop: number;
   paddingTop: number;
   titleSize: number;
   titleWidth: number;
@@ -76,6 +77,7 @@ export function layoutRail(): void {
   reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   for (const entry of sections) {
     geometry.set(entry, {
+      stickTop: parseFloat(getComputedStyle(entry.row).top),
       paddingTop: parseFloat(getComputedStyle(entry.section).paddingTop),
       titleSize: parseFloat(getComputedStyle(entry.heading).fontSize),
       titleWidth: entry.heading.offsetWidth,
@@ -87,7 +89,7 @@ export function layoutRail(): void {
 
 export function updateRail(): void {
   if (!barGeometry) return;
-  const { stickTop, height: barHeight, titleSize: barTitleSize, gap: barGap } = barGeometry;
+  const { stickTop: barTop, height: barHeight, titleSize: barTitleSize, gap: barGap } = barGeometry;
   const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
   const measured = sections.map((entry) => {
     const sizes = geometry.get(entry);
@@ -100,7 +102,9 @@ export function updateRail(): void {
   let pinned: RailState['pinned'] = null;
   measured.forEach(({ entry, sizes, top }, index) => {
     const next = measured[index + 1];
-    const travelled = stickTop - top;
+    // A full-size heading sticks a landing gap below the bar top, then rises into the bar as it shrinks.
+    const gap = sizes.stickTop - barTop;
+    const travelled = sizes.stickTop - top;
     // Scroll distance from this heading sticking until the next heading reaches the bottom of the bar.
     const range = next ? next.top - top - barHeight : maxScroll - window.scrollY + travelled;
     const collapseDistance = Math.min(reducedMotion ? 1 : sizes.titleSize * 1.5, Math.max(range, 0));
@@ -113,14 +117,14 @@ export function updateRail(): void {
       collapse,
       progress,
       titleScale: lerp(1, scale, collapse),
-      titleY: (collapse * (barHeight - barTitleSize)) / 2,
+      titleY: collapse * ((barHeight - barTitleSize) / 2 - gap),
       // Start of the rule moves left to sit after the shrunken title; it still ends at the row edge.
       ruleShift: collapse * (sizes.titleWidth * scale + barGap - restingRuleStart),
-      ruleY: (collapse * (barHeight - sizes.titleSize)) / 2,
-      band: lerp(sizes.titleSize, barHeight, collapse),
+      ruleY: collapse * ((barHeight - sizes.titleSize) / 2 - gap),
+      band: lerp(gap + sizes.titleSize, barHeight, collapse),
     };
-    // Handover runs from 1 to 0 while the next heading slides up over the bar.
-    const handover = next ? clamp((next.top - stickTop) / barHeight) : 1;
+    // Handover runs from 1 to 0 while the next heading slides up to its sticky spot.
+    const handover = next ? clamp((next.top - next.sizes.stickTop) / barHeight) : 1;
     if (collapse >= 1) pinned = { title: entry.title, progress, handover };
   });
   rail.morphs = morphs;

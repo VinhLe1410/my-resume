@@ -114,6 +114,9 @@
   :global(html) {
     --resume-header-height: 4.75rem;
     --section-bar-height: 3.5rem;
+    --section-pad-top: clamp(2.5rem, 4vw, 5rem);
+    /* Space between the site header and a full-size section heading once it sticks. */
+    --landing-gap: clamp(1rem, 1.6vw, 1.5rem);
     scroll-padding-top: var(--resume-header-height);
     scroll-padding-bottom: 4.75rem;
     scrollbar-gutter: stable;

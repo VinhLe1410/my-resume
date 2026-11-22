@@ -38,13 +38,13 @@
 
 <style>
   section {
-    padding-top: clamp(2.5rem, 4vw, 5rem);
+    padding-top: var(--section-pad-top);
     padding-bottom: clamp(4.5rem, 8vw, 8.5rem);
   }
 
   .section-heading {
     position: sticky;
-    top: var(--resume-header-height);
+    top: calc(var(--resume-header-height) + var(--landing-gap));
     z-index: 6;
     display: flex;
     align-items: center;
@@ -58,10 +58,11 @@
     opacity: 0;
   }
 
+  /* Starts at the site header, so it also covers the landing gap above the heading. */
   .section-heading::before {
     content: '';
     position: absolute;
-    inset: 0 0 auto;
+    inset: calc(-1 * var(--landing-gap)) 0 auto;
     z-index: -1;
     height: var(--band);
     border-image: linear-gradient(var(--color-base) 0 0) fill 0 / 0 / 0 100vmax;
@@ -70,7 +71,7 @@
   .section-heading::after {
     content: '';
     position: absolute;
-    top: var(--band);
+    top: calc(var(--band) - var(--landing-gap));
     right: 0;
     left: 0;
     height: 1.5rem;
