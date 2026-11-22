@@ -36,7 +36,8 @@
     gap: 1.25rem;
     height: var(--section-bar-height);
     margin-bottom: calc(-1 * var(--section-bar-height));
-    background: var(--color-base);
+    /* Paints edge to edge, so nothing in the page margin shows through. The outset never adds scroll. */
+    border-image: linear-gradient(var(--color-base) 0 0) fill 0 / 0 / 0 100vmax;
     opacity: 0;
     pointer-events: none;
   }
@@ -51,7 +52,7 @@
     position: absolute;
     inset: 100% 0 auto;
     height: 1.5rem;
-    background: linear-gradient(var(--color-base), transparent);
+    border-image: linear-gradient(var(--color-base), transparent) fill 0 / 0 / 0 100vmax;
     pointer-events: none;
   }
 
@@ -64,8 +65,8 @@
   .bar-title {
     flex: none;
     color: var(--color-primary);
-    font: 700 1.75rem/1 var(--font-headline);
-    letter-spacing: -0.055em;
+    font: 700 2rem/1 var(--font-mono);
+    letter-spacing: -0.04em;
   }
 
   .bar-track {
@@ -80,7 +81,7 @@
 
   @media (max-width: 760px) {
     .bar-title {
-      font-size: 1.125rem;
+      font-size: 1.375rem;
     }
   }
 </style>
