@@ -1,9 +1,15 @@
 // ── Types ──────────────────────────────────────────────
 
+// Text wrapped in **double asterisks** renders bold; see `$lib/emphasis`.
+
 export type AboutContactRow =
-  | { kind: 'text'; label: string; value: string }
-  | { kind: 'email'; label: string; address: string }
-  | { kind: 'link'; label: string; href: string; text?: string };
+  { kind: 'email'; label: string; address: string } | { kind: 'link'; label: string; href: string; text?: string };
+
+export interface FocusItem {
+  title: string;
+  context: string;
+  text: string;
+}
 
 export interface About {
   name: string;
@@ -11,9 +17,16 @@ export interface About {
   location: string;
   headline: string;
   intro: string;
+  now: string;
   /** Page description for search results and link previews. */
   summary: string;
+  focus: FocusItem[];
   contact: AboutContactRow[];
+}
+
+export interface ExperienceGroup {
+  label?: string;
+  bullets: string[];
 }
 
 export interface ExperienceEntry {
@@ -22,18 +35,27 @@ export interface ExperienceEntry {
   location: string;
   period: string;
   summary: string;
-  highlights: string[];
-  bullets: string[];
+  groups: ExperienceGroup[];
 }
 
-export interface SkillItem {
+export interface Project {
   name: string;
-  pinned?: boolean;
+  status: string;
+  period: string;
+  summary: string;
+  why: string;
+  tags: string[];
+}
+
+export interface Capstone {
+  name: string;
+  summary: string;
+  href: string;
 }
 
 export interface SkillCategory {
   label: string;
-  items: SkillItem[];
+  items: string[];
 }
 
 export interface Education {
@@ -43,12 +65,13 @@ export interface Education {
   mode?: string;
   status?: string;
   description: string;
-  achievements: string[];
+  capstone?: Capstone;
 }
 
 export interface Resume {
   about: About;
   experience: ExperienceEntry[];
+  projects: Project[];
   skills: SkillCategory[];
   education: Education[];
 }
@@ -58,16 +81,28 @@ export interface Resume {
 export const resume: Resume = {
   about: {
     name: 'Vinh Le',
-    role: 'Full-stack Developer',
-    location: 'VIC, Australia',
-    headline: 'Anything and everything coding',
+    role: 'Full-stack / Software Developer',
+    location: 'Hawthorn, VIC, Australia',
+    headline: 'Build stuff, ship products, make life a little easier.',
     intro:
-      'Computer Science graduate with a Data Science major, currently™ pursuing Master of IT in Software Development while working as a Full-stack developer at the same time. I build web apps, browser extensions, automation workflows through TypeScript, React, and setting up infrastructure on AWS that they rely on.',
+      "I studied Computer Science, then realised halfway through that I'd rather build products than prove theorems. Now I build applications, browser extensions, and automation for teams buried in manual work, and lately I build them alongside a small crew of AI agents.",
+    now: 'Full-stack developer at Evolit and Master of IT student at Swinburne. Open to Full-stack Developer, Software Developer, and AI Product Engineer roles.',
     summary:
-      'Full-stack developer in Victoria, Australia, working with TypeScript, React, and AWS on web apps, browser extensions, and automation.',
+      'Full-stack and software developer in Melbourne building applications, automation, and AI-assisted products with TypeScript, React, and AWS.',
+    focus: [
+      {
+        title: 'ReviewerBox',
+        context: 'Personal · agentic development',
+        text: 'AI coding agents that review pull requests in disposable sandboxes, with a person approving every review before it posts.',
+      },
+      {
+        title: 'Client products',
+        context: 'Evolit',
+        text: 'Internal products for two clients in education and legal services, used by their staff every day.',
+      },
+    ],
     contact: [
       { kind: 'email', label: 'Email', address: 'lpvinh2k4@gmail.com' },
-      { kind: 'text', label: 'Phone', value: '+61 433 443 221' },
       { kind: 'link', label: 'GitHub', href: 'https://github.com/VinhLe1410' },
       { kind: 'link', label: 'LinkedIn', href: 'https://linkedin.com/in/vinhle1410' },
     ],
@@ -75,142 +110,115 @@ export const resume: Resume = {
 
   experience: [
     {
-      role: 'Junior Full Stack Developer',
+      role: 'Junior Full-stack Developer',
       company: 'Evolit Pty Ltd',
-      location: 'Onsite - Remote',
-      period: 'Feb 2025 - Present',
+      location: 'Onsite / Remote',
+      period: 'Feb 2025 – Present',
       summary:
-        'Work with clients to turn requirements and feedback into development plans, then build web apps, browser extensions, and automation using TypeScript, React, and AWS',
-      highlights: [
-        "Built a Chrome extension that compares records against the client's CRM and downloads many files at once. It queues downloads, shows per-file status, retries failures, handles rate limits, and refreshes access tokens on AWS.",
-        'Building a web portal for education providers in Vietnam to manage courses, teaching content, students, enrollments, feedback, and staff with more™ to come.',
-      ],
-      bullets: [
-        'Set up infrastructure with AWS CDK and Terraform, and GitHub Actions workflows for builds, deployments, and release packaging.',
-        'Set up and maintained Nx monorepos to share libraries between web applications and automation workflows.',
-        'Delivered automation workflows for CRMs and cloud drives, React back-office apps, a CRM widget with voice calling, and a Chrome extension.',
-        'Worked with clients to turn business requirements and product feedback into epics, milestones, and tickets in GitHub Projects or Jira.',
-        'Developed both through hand-writing code (before) and now actively with coding agents such as Claude Code, Cursor, Codex, Amp.',
-        'Maintain and refine agent workflows for the team to reduce unnecessary token use and make the tools easier to work with.',
+        'Turn client requirements into shipped products: web apps, browser extensions, automation, and the AWS infrastructure under them.',
+      groups: [
+        {
+          label: 'AI-driven engineering',
+          bullets: [
+            '**Tripled** my weekly delivery (from approx. **6 to 18 merged PRs**) by building an AI-agent workflow: spec-first planning, agent code review, and a 13-skill toolkit shared across 3 coding agents.',
+            "Wrote **78%** of the team's feature specs (105 of 135) in a spec-driven AI workflow, with 220+ agent review passes catching issues before human review; reviewed **240+** teammates' PRs across 2 organisations.",
+          ],
+        },
+        {
+          label: 'Legal-claims automation (law-firm client)',
+          bullets: [
+            'Built a Chrome extension that cut claim filing from approx. **20 to 5 minutes (75% faster)** by auto-checking claimant data and uploading every evidence file in one click, saving **2,000+ staff-hours** across a 35,000+ claim portfolio.',
+            'Built an automated exporter that pulled **80,000+ claim records** from a government claims portal, avoiding approx. **4,000 hours** of manual data fetching.',
+            'Automated claim-readiness checks and settlement valuation for the full claim portfolio, replacing over **6,000 hours** of manual review per pass, backed by **700+ automated tests**.',
+            'Cut failed CI runs from **27% to under 1%** in one week, and rolled out secret scanning, automated dependency updates, and security linting across 2 production apps.',
+          ],
+        },
+        {
+          label: 'Classloom: tutoring-operations platform',
+          bullets: [
+            "Top contributor (approx. **50% of the codebase, 250+ PRs**) to a platform that runs an education group's daily operations; shipped **15 feature areas** across 50+ screens.",
+            'Replaced paper, spreadsheets, and chat apps with attendance, student import, marking, and auto-scored tests.',
+            'Made the test suite **57% faster** and CI failures **60% less frequent** for a 5-developer team; improved the CI pipeline to run **60% more efficiently** through better GitHub Actions workflows and technology migrations.',
+          ],
+        },
       ],
     },
     {
-      role: 'Tech Lead / Full Stack Developer',
+      role: 'Tech Lead / Full-stack Developer',
       company: 'Learning Portal for EdBright Tutoring',
       location: 'Remote',
-      period: 'Aug 2025 — Feb 2026',
-      summary: 'Led architecture and full-stack development for a multi-role educational web application.',
-      highlights: [
-        'Designed and enforced front-end and back-end architecture, including folder structure, data flow, and API integration.',
-        'Built responsive and accessible UIs using Tailwind CSS, focusing on child-friendly, interactive user experiences.',
+      period: 'Aug 2025 – Feb 2026',
+      summary: 'Led architecture and full-stack development of a multi-role learning platform for a tutoring business.',
+      groups: [
+        {
+          bullets: [
+            'Led and built a learning platform from scratch (classes, lesson videos, materials, homework, announcements, and student and tutor portals), authoring **70% of the codebase** and handing it over to the client in production.',
+            'Shipped AI-assisted essay marking (rubric scores, feedback, corrections), cutting tutor marking from **20 to 5 minutes** per essay (**75% improvement**).',
+          ],
+        },
       ],
-      bullets: [
-        'Tech Lead & primary Full-Stack Developer for a multi-role educational web application.',
-        'Led major codebase refactors, adopting React Query for server-state management to improve performance, caching, and maintainability.',
-        'Translated business and educational requirements into database schema design and back-end logic.',
-        'Used AI-assisted tooling during refactors to plan, validate, and implement changes while preserving existing functionality and code standards.',
-        'Supporting deployment and post-release technical issues, assisting stakeholders with configuration and troubleshooting.',
-      ],
+    },
+  ],
+
+  projects: [
+    {
+      name: 'ReviewerBox',
+      status: 'In progress',
+      period: 'Nov 2026 – Now',
+      summary:
+        'A self-hosted place where coding agents review pull requests inside throwaway sandboxes, and a person decides what gets posted.',
+      why: 'Agents now write code faster than people can review it. ReviewerBox tests whether an agent can take the first review pass safely, so human reviewers start from findings instead of a blank diff.',
+      tags: ['TanStack Start', 'React', 'SQLite', 'Drizzle', 'Podman'],
     },
   ],
 
   skills: [
     {
-      label: 'AWS & Infrastructure',
-      items: [
-        { name: 'AWS CDK', pinned: true },
-        { name: 'Terraform', pinned: true },
-        { name: 'Lambda', pinned: true },
-        { name: 'Route 53' },
-        { name: 'CloudFormation', pinned: true },
-        { name: 'AWS Amplify' },
-        { name: 'DynamoDB' },
-        { name: 'Cognito', pinned: true },
-        { name: 'Secrets Manager', pinned: true },
-        { name: 'CloudWatch', pinned: true },
-        { name: 'SQS', pinned: true },
-        { name: 'SNS' },
-        { name: 'API Gateway', pinned: true },
-        { name: 'S3', pinned: true },
-        { name: 'EC2' },
-      ],
+      label: 'AI & Agents',
+      items: ['Claude Code', 'Amp', 'Codex', 'Pi Agent', 'Spec-driven development', 'Agent skills'],
     },
     {
       label: 'Web Development',
       items: [
-        { name: 'Next.js' },
-        { name: 'React', pinned: true },
-        { name: 'Tailwind CSS', pinned: true },
-        { name: 'TanStack Query', pinned: true },
-        { name: 'Svelte / SvelteKit', pinned: true },
-        { name: 'WXT', pinned: true },
-        { name: 'shadcn/ui', pinned: true },
-        { name: 'Zod', pinned: true },
-        { name: 'Hono', pinned: true },
-        { name: 'Nx Monorepo', pinned: true },
-        { name: 'Node.js', pinned: true },
-        { name: 'Bun', pinned: true },
-        { name: 'Vue.js' },
-        { name: 'Expo' },
-        { name: 'tRPC' },
-        { name: 'Turborepo' },
+        'React',
+        'Svelte / SvelteKit',
+        'TanStack Query',
+        'Tailwind CSS',
+        'shadcn/ui',
+        'Hono',
+        'Zod',
+        'WXT',
+        'Node.js',
+        'Bun',
       ],
     },
     {
-      label: 'Tools',
+      label: 'AWS & Infrastructure',
       items: [
-        { name: 'Docker', pinned: true },
-        { name: 'Claude Code', pinned: true },
-        { name: 'Codex', pinned: true },
-        { name: 'Pi Agent', pinned: true },
-        { name: 'pnpm', pinned: true },
-        { name: 'Excalidraw' },
-        { name: 'Postman' },
-        { name: 'OrbStack' },
-        { name: 'Figma' },
-        { name: 'Draw.io' },
+        'AWS CDK',
+        'Terraform',
+        'Lambda',
+        'S3',
+        'SQS',
+        'Cognito',
+        'API Gateway',
+        'Secrets Manager',
+        'CloudWatch',
+        'CloudFormation',
+        'Docker',
       ],
-    },
-    {
-      label: 'Languages',
-      items: [
-        { name: 'JavaScript', pinned: true },
-        { name: 'TypeScript', pinned: true },
-        { name: 'C++' },
-        { name: 'Ruby' },
-        { name: 'SQL', pinned: true },
-        { name: 'HTML' },
-        { name: 'PHP' },
-        { name: 'CSS' },
-      ],
-    },
-    {
-      label: 'Databases & ORMs',
-      items: [
-        { name: 'MySQL' },
-        { name: 'PostgreSQL', pinned: true },
-        { name: 'SQLite', pinned: true },
-        { name: 'Drizzle', pinned: true },
-        { name: 'NoSQL' },
-      ],
-    },
-    {
-      label: 'Project Management',
-      items: [{ name: 'Jira', pinned: true }],
     },
     {
       label: 'Testing & CI/CD',
-      items: [
-        { name: 'Vitest', pinned: true },
-        { name: 'Playwright', pinned: true },
-        { name: 'GitHub', pinned: true },
-        { name: 'GitHub Actions', pinned: true },
-        { name: 'GitLab' },
-      ],
+      items: ['Vitest', 'Playwright', 'GitHub Actions', 'Nx Monorepo', 'pnpm'],
     },
     {
-      label: 'IDEs',
-      items: [{ name: 'VS Code' }, { name: 'Cursor' }, { name: 'Zed', pinned: true }, { name: 'NeoVim' }],
+      label: 'Languages & Databases',
+      items: ['TypeScript', 'JavaScript', 'SQL', 'PostgreSQL', 'SQLite', 'Drizzle'],
+    },
+    {
+      label: 'Project Management',
+      items: ['Jira', 'GitHub Projects', 'Linear'],
     },
   ],
 
@@ -222,7 +230,6 @@ export const resume: Resume = {
       status: 'In progress',
       description:
         'Specialising in Software Development while working as a full-stack developer. Expected to finish in December 2027.',
-      achievements: [],
     },
     {
       institution: 'Swinburne University of Technology',
@@ -230,15 +237,13 @@ export const resume: Resume = {
       period: 'Mar 2023 — Dec 2025',
       mode: 'Full-time',
       description:
-        'Gained deep knowledge across Computer Science while discovering a passion for building applications and software solutions that meet user needs.',
-      achievements: [
-        'HD and Distinction in Part 1 and 2 of the Final Project',
-        'HD in Computing Technology Innovation Project',
-        'HD in Computing Technology Design Project',
-        'HD in Cloud Computing Architecture',
-        'Distinction in Software Deployment and Evolution',
-        'Distinction in Computing Technology Inquiry Project',
-      ],
+        'HDs in the Final Project, Cloud Computing Architecture, and the Technology Innovation and Design Projects.',
+      capstone: {
+        name: 'ProofVault.Tech',
+        summary:
+          'Industry-sponsored capstone: a phone app that records audio and flags risks for elderly people and children, on self-hosted infrastructure. I built the mobile recorder, the file storage, and the first automated tests. Delivered to the sponsor and shown at Swinburne CAPEX25.',
+        href: 'https://www.swinburne.edu.au/events/2025/11/capstone-project-expo-2025/#computer',
+      },
     },
   ],
 };

@@ -8,14 +8,13 @@
 
 <SlideLayout id="skills" title="Skills">
   {#snippet body()}
-    <p class="legend"><span aria-hidden="true"></span> Brighter skills reflect recent project work</p>
     <div class="skill-grid">
       {#each data as category, group (category.label)}
         <div class="category" id={anchor.skillGroup(group)}>
           <h3>{category.label}</h3>
           <ul>
-            {#each category.items as item, index (item.name)}
-              <li id={anchor.skill(group, index)} class:active={item.pinned}>{item.name}</li>
+            {#each category.items as item, index (item)}
+              <li id={anchor.skill(group, index)}>{item}</li>
             {/each}
           </ul>
         </div>
@@ -25,23 +24,6 @@
 </SlideLayout>
 
 <style>
-  .legend {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    margin-bottom: 2.5rem;
-    color: var(--color-muted);
-    font: 400 0.7rem/1.5 var(--font-mono);
-    letter-spacing: 0.05em;
-  }
-
-  .legend span {
-    width: 0.65rem;
-    height: 0.65rem;
-    background: var(--color-primary);
-    flex: none;
-  }
-
   .skill-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -69,12 +51,8 @@
   }
 
   li {
-    color: var(--color-muted);
-    font: 400 0.84rem/1.6 var(--font-mono);
-  }
-
-  li.active {
     color: var(--color-primary);
+    font: 400 0.84rem/1.6 var(--font-mono);
   }
 
   @media (max-width: 760px) {

@@ -1,17 +1,18 @@
 import { resume, type AboutContactRow } from '$lib/data/resume';
+import { plain } from '$lib/emphasis';
 import { slides, type SlideId } from '$lib/slides';
 
 // Element ids that search results scroll to. Components render the same ids.
 export const anchor = {
   roleTitle: (role: number) => `role-${role}`,
   roleSummary: (role: number) => `role-${role}-summary`,
-  highlight: (role: number, line: number) => `role-${role}-highlight-${line}`,
-  contribution: (role: number, line: number) => `role-${role}-contribution-${line}`,
+  bullet: (role: number, group: number, line: number) => `role-${role}-group-${group}-${line}`,
+  project: (project: number) => `project-${project}`,
   skillGroup: (group: number) => `skills-${group}`,
   skill: (group: number, item: number) => `skills-${group}-${item}`,
   degree: (degree: number) => `degree-${degree}`,
   degreeSummary: (degree: number) => `degree-${degree}-summary`,
-  grade: (degree: number, line: number) => `degree-${degree}-grade-${line}`,
+  capstone: (degree: number) => `degree-${degree}-capstone`,
 };
 
 export type SearchAction =
@@ -20,7 +21,7 @@ export type SearchAction =
   | { kind: 'copy'; value: string }
   | { kind: 'open'; href: string };
 
-type SearchGroup = 'Sections' | 'Experience' | 'Skills' | 'Education' | 'Contact';
+type SearchGroup = 'Sections' | 'Experience' | 'Side Projects' | 'Skills' | 'Education' | 'Contact';
 
 export interface SearchEntry {
   key: string;
@@ -54,6 +55,7 @@ const skillCount = resume.skills.reduce((total, group) => total + group.items.le
 const sectionDetails: Record<SlideId, string> = {
   about: 'Summary and contact details',
   experience: `${resume.experience.length} roles`,
+  projects: resume.projects.map((project) => project.name).join(', '),
   skills: `${resume.skills.length} groups, ${skillCount} skills`,
   education: `${resume.education.length} degrees`,
 };
@@ -92,18 +94,10 @@ function contactDrafts(row: AboutContactRow): Omit<SearchEntry, 'key'>[] {
       ];
     case 'link':
       return [draft('Contact', `Open ${row.label}`, displayUrl(row.href), { kind: 'open', href: row.href }, 'profile')];
-    case 'text':
-      return [
-        draft('Contact', `Copy ${row.label.toLowerCase()}`, row.value, { kind: 'copy', value: row.value }, row.value),
-      ];
   }
 }
 
 const { education } = resume;
-
-// Email and profile links are the likely actions, so they list before plain text rows.
-const contactOrder: Record<AboutContactRow['kind'], number> = { email: 0, link: 1, text: 2 };
-const contactRows = resume.about.contact.toSorted((a, b) => contactOrder[a.kind] - contactOrder[b.kind]);
 
 export const searchEntries: SearchEntry[] = [
   ...slides.map((slide) => draft('Sections', slide.label, sectionDetails[slide.id], { kind: 'section', id: slide.id })),
@@ -118,30 +112,32 @@ export const searchEntries: SearchEntry[] = [
         `${role.company} ${role.location} ${role.period}`,
       ),
       draft('Experience', role.summary, role.company, reveal(anchor.roleSummary(r), 'center'), keywords),
-      ...role.highlights.map((text, line) =>
-        draft('Experience', text, role.company, reveal(anchor.highlight(r, line), 'center'), keywords),
-      ),
-      ...role.bullets.map((text, line) =>
-        draft(
-          'Experience',
-          text,
-          `${role.company} · more contributions`,
-          reveal(anchor.contribution(r, line), 'center'),
-          keywords,
+      ...role.groups.flatMap((group, g) =>
+        group.bullets.map((text, line) =>
+          draft(
+            'Experience',
+            plain(text),
+            group.label ? `${role.company} · ${group.label}` : role.company,
+            reveal(anchor.bullet(r, g, line), 'center'),
+            `${keywords} ${group.label ?? ''}`,
+          ),
         ),
       ),
     ];
   }),
+  ...resume.projects.map((project, p) =>
+    draft(
+      'Side Projects',
+      project.name,
+      `Side project · ${project.status}`,
+      reveal(anchor.project(p), 'center'),
+      `side project ${project.summary} ${project.tags.join(' ')}`,
+    ),
+  ),
   ...resume.skills.flatMap((group, g) => [
     draft('Skills', group.label, `${group.items.length} skills`, reveal(anchor.skillGroup(g), 'center')),
     ...group.items.map((item, i) =>
-      draft(
-        'Skills',
-        item.name,
-        item.pinned ? `${group.label} · recent project work` : group.label,
-        reveal(anchor.skill(g, i), 'center'),
-        group.label,
-      ),
+      draft('Skills', item, group.label, reveal(anchor.skill(g, i), 'center'), group.label),
     ),
   ]),
   ...education.flatMap((entry, degree) => [
@@ -159,17 +155,19 @@ export const searchEntries: SearchEntry[] = [
       reveal(anchor.degreeSummary(degree), 'center'),
       `${entry.institution} ${entry.degree}`,
     ),
-    ...entry.achievements.map((text, line) =>
-      draft(
-        'Education',
-        text,
-        `${entry.institution} · notable grade`,
-        reveal(anchor.grade(degree, line), 'center'),
-        `grade grades ${entry.institution} ${entry.degree}`,
-      ),
-    ),
+    ...(entry.capstone
+      ? [
+          draft(
+            'Education',
+            entry.capstone.name,
+            `${entry.degree} · capstone project`,
+            reveal(anchor.capstone(degree), 'center'),
+            `capstone capex ${entry.capstone.summary}`,
+          ),
+        ]
+      : []),
   ]),
-  ...contactRows.flatMap(contactDrafts),
+  ...resume.about.contact.flatMap(contactDrafts),
 ].map((entry, index) => ({ ...entry, key: `entry-${index}` }));
 
 function escapeRegExp(text: string): string {

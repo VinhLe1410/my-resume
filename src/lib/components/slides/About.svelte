@@ -1,10 +1,10 @@
 <script lang="ts">
   import { brandIcons } from '$lib/brand-icons';
-  import type { About, ExperienceEntry } from '$lib/data/resume';
-  import { anchor } from '$lib/search';
+  import ActivityHeatmap from '$lib/components/ActivityHeatmap.svelte';
+  import type { About } from '$lib/data/resume';
   import { onMount } from 'svelte';
 
-  let { data, experience }: { data: About; experience: ExperienceEntry[] } = $props();
+  let { data }: { data: About } = $props();
 
   const profiles = $derived(
     data.contact.flatMap((row) => {
@@ -59,17 +59,21 @@
     <div class="essay">
       <p class="headline">{data.headline}</p>
       <p class="summary">{data.intro}</p>
+      <p class="now"><span>Now</span>{data.now}</p>
     </div>
 
-    <div class="work">
-      <p class="work-label" id="about-experience">Experience</p>
-      <ul aria-labelledby="about-experience">
-        {#each experience as entry, role (entry.company)}
+    <div class="activity">
+      <p class="label">Activity</p>
+      <ActivityHeatmap />
+    </div>
+
+    <div class="focus">
+      <p class="label" id="about-focus">Currently working on</p>
+      <ul aria-labelledby="about-focus">
+        {#each data.focus as item (item.title)}
           <li>
-            <a class="job" href="#{anchor.roleTitle(role)}">
-              <span class="job-title">{entry.role}</span>
-              <span class="job-meta"><span>{entry.company}</span><span class="period">{entry.period}</span></span>
-            </a>
+            <p class="focus-title">{item.title} <span>{item.context}</span></p>
+            <p class="focus-text">{item.text}</p>
           </li>
         {/each}
       </ul>
@@ -86,11 +90,11 @@
     padding-block: clamp(2rem, 4vw, 4.5rem);
   }
 
-  /* Identity top left, essay top right, jobs across both columns underneath. */
+  /* Identity top left, essay top right, activity and current work underneath. */
   .layout {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: 'identity' 'essay' 'work';
+    grid-template-areas: 'identity' 'essay' 'activity' 'focus';
     row-gap: 3rem;
   }
 
@@ -99,7 +103,7 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
       grid-template-areas:
         'identity essay'
-        'work work';
+        'activity focus';
       column-gap: clamp(2.5rem, 6cqi, 6rem);
       row-gap: clamp(3rem, 7dvh, 5rem);
     }
@@ -215,65 +219,66 @@
     font: 400 1rem/1.65 var(--font-headline);
   }
 
-  .work {
-    grid-area: work;
+  .activity {
+    grid-area: activity;
   }
 
-  .work-label {
+  .focus {
+    grid-area: focus;
+  }
+
+  .label {
     margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--color-outline);
     color: var(--color-muted);
     font: 400 0.68rem/1.5 var(--font-mono);
     letter-spacing: 0.15em;
     text-transform: uppercase;
   }
 
-  .work ul {
+  .focus ul {
     display: grid;
-    gap: 1.5rem;
+    gap: 1rem;
     padding: 0;
     list-style: none;
   }
 
-  /* Same columns and gap as the row above, so each job sits under one of them. */
-  @container intro (min-width: 42rem) {
-    .work ul {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      column-gap: clamp(2.5rem, 6cqi, 6rem);
-    }
-  }
-
-  /* Same top rule as the highlights in the Experience section. */
-  .job {
-    display: grid;
-    gap: 0.35rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--color-outline);
-  }
-
-  .job-title {
+  .focus-title {
     color: var(--color-primary);
-    font: 500 1.05rem/1.35 var(--font-headline);
+    font: 500 1rem/1.35 var(--font-headline);
     letter-spacing: -0.015em;
   }
 
-  /* Company and period wrap as whole pieces, never mid-period. */
-  .job-meta {
-    display: flex;
-    flex-wrap: wrap;
-    column-gap: 1.25rem;
+  .focus-title span {
+    margin-left: 0.5rem;
     color: var(--color-muted);
-    font: 400 0.72rem/1.5 var(--font-mono);
-    letter-spacing: 0.02em;
+    font: 400 0.68rem/1.5 var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
-  .period {
-    white-space: nowrap;
+  .focus-text {
+    margin-top: 0.25rem;
+    color: var(--color-secondary);
+    font: 400 0.9rem/1.5 var(--font-headline);
   }
 
-  .job:hover .job-title {
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.2em;
+  .now {
+    display: flex;
+    gap: 0.9rem;
+    margin-top: 1.5rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-outline-subtle);
+    color: var(--color-secondary);
+    font: 400 0.78rem/1.55 var(--font-mono);
+  }
+
+  .now span {
+    flex: none;
+    color: var(--color-primary);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
   }
 
   @media (max-width: 760px) {

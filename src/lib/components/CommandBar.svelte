@@ -120,7 +120,7 @@
       aria-controls="command-results"
       aria-autocomplete="list"
       aria-activedescendant={activeResult ? `command-option-${activeResult.index}` : undefined}
-      placeholder="Search skills, roles, grades, contact"
+      placeholder="Search roles, side projects, skills, contact"
       autocomplete="off"
       spellcheck="false"
     />

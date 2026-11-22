@@ -11,7 +11,8 @@
     "prepare": "husky",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "activity": "node scripts/update-activity.mjs"
   },
   "devDependencies": {
     "@eslint/compat": "^2.1.1",
