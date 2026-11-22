@@ -12,7 +12,7 @@
     <div class="roles">
       {#each data as entry, role (entry.company)}
         <article class="role-entry">
-          <div class="role-meta">
+          <div class="role-meta" class:current={entry.period.includes('Present')}>
             <span class="period">{entry.period}</span>
             <span>{entry.location}</span>
           </div>
@@ -41,17 +41,68 @@
 </SlideLayout>
 
 <style>
+  /* A rail runs down the date column through every role, like a commit graph. */
+  .roles {
+    --rail-x: 0.3rem;
+    --node: 0.6rem;
+    position: relative;
+  }
+
+  .roles::before {
+    content: '';
+    position: absolute;
+    top: 0.75rem;
+    bottom: 0;
+    left: calc(var(--rail-x) - 0.5px);
+    width: 1px;
+    background: linear-gradient(var(--color-outline) 70%, transparent);
+  }
+
   .role-entry {
     display: grid;
     grid-template-columns: minmax(10rem, 0.3fr) minmax(0, 1fr);
     gap: clamp(2rem, 6vw, 7rem);
     padding: 2.5rem 0 4.5rem;
-    border-top: 1px solid var(--color-outline-subtle);
   }
 
   .role-entry:first-child {
     padding-top: 0;
-    border-top: 0;
+  }
+
+  /* Hollow for past roles, solid with a soft pulse for the current one. */
+  .role-meta::before {
+    content: '';
+    position: absolute;
+    top: 0.5rem;
+    left: var(--node-left);
+    width: var(--node);
+    height: var(--node);
+    border: 1px solid var(--color-primary);
+    background: var(--color-base);
+  }
+
+  .role-meta.current::before {
+    background: var(--color-primary);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .role-meta.current::after {
+      content: '';
+      position: absolute;
+      top: 0.5rem;
+      left: var(--node-left);
+      width: var(--node);
+      height: var(--node);
+      border: 1px solid var(--color-primary);
+      animation: pulse 2.4s ease-out infinite;
+    }
+  }
+
+  @keyframes pulse {
+    to {
+      opacity: 0;
+      scale: 2.6;
+    }
   }
 
   .role-entry:last-child {
@@ -59,10 +110,13 @@
   }
 
   .role-meta {
+    --node-left: calc(var(--rail-x) - var(--node) / 2);
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
     padding-top: 0.4rem;
+    padding-left: 1.75rem;
     color: var(--color-muted);
     font: 400 0.75rem/1.5 var(--font-mono);
     letter-spacing: 0.03em;
@@ -139,10 +193,17 @@
       padding-bottom: 3.5rem;
     }
 
+    /* One column on phones: the whole role steps right of the rail. */
+    .role-entry {
+      padding-left: 1.75rem;
+    }
+
     .role-meta {
+      --node-left: calc(var(--rail-x) - var(--node) / 2 - 1.75rem);
       flex-direction: row;
       flex-wrap: wrap;
       gap: 0.5rem 1.25rem;
+      padding-left: 0;
     }
 
     h3 {

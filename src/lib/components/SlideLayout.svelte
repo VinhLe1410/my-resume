@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { decodeOnView } from '$lib/scramble';
   import { rail, registerSection, restingMorph } from '$lib/section-rail.svelte';
   import type { SlideId } from '$lib/slides';
   import { onMount, type Snippet } from 'svelte';
@@ -27,7 +28,7 @@
     style:--rule-y="{morph.ruleY}px"
     style:--band="{morph.band}px"
   >
-    <h2 bind:this={heading} tabindex="-1">{title}</h2>
+    <h2 bind:this={heading} tabindex="-1" {@attach decodeOnView}>{title}</h2>
     <span class="rule" aria-hidden="true"></span>
   </div>
   <div class="section-body">
@@ -37,13 +38,13 @@
 
 <style>
   section {
-    padding-top: clamp(2.5rem, 4vw, 5rem);
+    padding-top: var(--section-pad-top);
     padding-bottom: clamp(4.5rem, 8vw, 8.5rem);
   }
 
   .section-heading {
     position: sticky;
-    top: var(--resume-header-height);
+    top: calc(var(--resume-header-height) + var(--landing-gap));
     z-index: 6;
     display: flex;
     align-items: center;
@@ -57,31 +58,34 @@
     opacity: 0;
   }
 
+  /* Starts at the site header, so it also covers the landing gap above the heading. */
   .section-heading::before {
     content: '';
     position: absolute;
-    inset: 0 0 auto;
+    inset: calc(-1 * var(--landing-gap)) 0 auto;
     z-index: -1;
     height: var(--band);
-    background: var(--color-base);
+    border-image: linear-gradient(var(--color-base) 0 0) fill 0 / 0 / 0 100vmax;
   }
 
   .section-heading::after {
     content: '';
     position: absolute;
-    top: var(--band);
+    top: calc(var(--band) - var(--landing-gap));
     right: 0;
     left: 0;
     height: 1.5rem;
-    background: linear-gradient(var(--color-base), transparent);
+    border-image: linear-gradient(var(--color-base), transparent) fill 0 / 0 / 0 100vmax;
     opacity: var(--collapse);
   }
 
   h2 {
     flex: none;
     color: var(--color-primary);
-    font: 700 clamp(2.5rem, 5vw, 5rem)/1 var(--font-headline);
-    letter-spacing: -0.055em;
+    /* Mono, so the title can decode from glyphs without its width changing.
+       Kept within 2x of the pinned bar title, so the collapse reads as a settle and not a jump. */
+    font: 700 clamp(2rem, 3.4vw, 3rem)/1 var(--font-mono);
+    letter-spacing: -0.04em;
     transform-origin: 0 0;
     translate: 0 var(--title-y);
     scale: var(--title-scale);
